@@ -30,10 +30,10 @@
 \SweaveOpts{concordance=TRUE}
 
 %------------------------------------------------------------
-\title{Assignment 4}
+\title{Assignment 6}
 %------------------------------------------------------------
 \author{Gilbert Watson}
-\date{Tuesday, October 15, 2013}
+\date{Monday, November 4th, 2013}
 
 \SweaveOpts{highlight=TRUE, tidy=TRUE, keep.space=TRUE, keep.blank.space=FALSE, keep.comment=TRUE}
 \SweaveOpts{prefix.string=Fig}
@@ -43,338 +43,149 @@
 \tableofcontents
 
 %-------------------------------------------
-\section{5.1}
+\section{6.5}
 %--------------------------------------------
 
-For the matrices below, obtain (1) $A + B$, (2) $A - B$, (3) $AC$, (4) $AB'$, (5) $B'A$. State the dimension of each resulting matrix.
+In a small-scale experimental study of the relation between degree of brand liking ($Y$) and moisture content ($X_1$) and sweetness ($X_2$) of the product, the following results were obtained from the experiment based on a completely randomized design (data are coded):
+
+\begin{enumerate}[a)]
+\item{} Obtain the scatter plot matrix and the correlation matrix. What information do these diagnostic aids provide here?
+\item{} Fit regession model (6.1) to the data. State the estimated regression function. How is $b_1$ interpreted here?
+\item{} Obtain the residuals and prepare a box plot of the residuals. What information does this plot provide?
+\item{} Plot the residuals against $Y$, $X_1$, $X_2$ , and $X_1$ $X_2$ on separate graphs. Also prepare a normal
+probability plot. Interpret the plots and summarize your findings.
+\item{} Conduct the Breusch-Pagan test for constancy of the error variance, assuming $log(\sigma{}^2) = \gamma{}_0 + \gamma{}_1X_{i1} + \gamma{}_2X_{i2}$: use $\alpha{} = .01$. State the alternaltives, decision rule, and conclusion.
+\end{enumerate}
 
 \subsection{Answer:}
-
-First, let's define the matricies as in the book:
-
-<<matricies>>=
-A <- matrix(data=c(1,4,2,6,3,8),nrow=3,ncol=2,byrow=T)
-B <- matrix(data=c(1,3,1,4,2,5),nrow=3,ncol=2,byrow=T)
-C <- matrix(data=c(3,8,1,5,4,0),nrow=2,ncol=3,byrow=T)
-@
-
-\begin{enumerate}[1)]
-\item{} $A + B$:
-<<AplusB>>=
-answer <- A + B
-answer
-@
-The dimensions are $\Sexpr{dim(A + B)[1]}$ by $\Sexpr{dim(A + B)[2]}$.
-
-\item{} $A - B$:
-<<AminusB>>=
-answer <- A - B
-answer
-@
-The dimensions are $\Sexpr{dim(A - B)[1]}$ by $\Sexpr{dim(A - B)[2]}$.
-
-\item{} $AC$:
-<<AtimesC>>=
-answer <- A %*% C
-answer
-@
-The dimensions are $\Sexpr{dim(answer)[1]}$ by $\Sexpr{dim(answer)[2]}$.
-
-\item{} $AB'$:
-<<ABprime>>=
-answer <- A %*% t(B)
-answer
-@
-The dimensions are $\Sexpr{dim(answer)[1]}$ by $\Sexpr{dim(answer)[2]}$.
-
-\item{} $B'A$:
-<<BprimeA>>=
-answer <- t(B) %*% A
-answer
-@
-The dimensions are $\Sexpr{dim(answer)[1]}$ by $\Sexpr{dim(answer)[2]}$.
-
-\end{enumerate}
 
 %-------------------------------------------
-\section{5.9}
+\section{7.3}
 %--------------------------------------------
 
-Let $A$ be defined as in the book:
+Refer to Brand Preference Problem 6.5:
+
 \begin{enumerate}[a)]
-\item{} Are the column vectors of $A$ linearly dependent?
-\item{} Restate definition (5.20) in terms of row vectors. Are the row vectors of $A$ linearly dependent?
-\item{} What is the rank of $A$?
-\item{} Calculate the determinant of $A$.
+\item{} Obtain the analysis of variance table that decomposes the regression sum of squares into extra sums of squares associated with $X$, and with $X_2$ , given $X_1$.
+\item{} Test whether $X_2$ can be dropped from the regression model given that $X_1$ is retained. Use the $F^*$ test statistic and level of significance .01. State the alternatives, decision rule, and conclusion. What is the P-value of the test?
 \end{enumerate}
 
 \subsection{Answer:}
-
-\begin{enumerate}[a)]
-\item{} If the determinant of $A$ is non-zero, then the vectors of A are independent. What is the determinant?
-<<matrixA>>=
-A <- matrix(data=c(0,1,8,0,3,1,0,5,5),nrow=3,ncol=3,byrow=T)
-det(A)
-@
-The determinant of A is zero, therefore, the vectors are dependent.
-
-\item{} Restating definition (5.20) for row vectors:
-
-When c scalars $k_1$, ... , $k_c$, not all zero, can be found such that: 
-$$k_1R_1 + k_2R_2 + ... + k_rR_r = 0$$ 
-where 0 denotes the zero row vector, the r row vectors are linearly dependent. If the only set of scalars for which the equality holds is $k_1 = 0$, ... , $k_c = 0$, the set of r row vectors is linearly independent.
-
-Let's see if the row vectors are linearly independent. Is the determinant of $A'$ non-zero?
-
-<<det2>>=
-det(t(A))
-@
-
-The determinant of $A'$ is zero, therefore the rows of A are not linearly independent.
-
-\item{} The rank of $A$ is 2 since any two row vectors can be found to be linearly independent.
-
-\item{} As calculated before, the determinant of A is 0.
-
-\end{enumerate}
 
 %-------------------------------------------
-\section{5.26ab}
+\section{7.12}
 %--------------------------------------------
 
-Refer to Plastic hardness Problems 1.22 and 5.7.
-\begin{enumerate}[a)]
-\item{} Using matrix methods, obtain the following: (1) $(X'X)^{-1}$, (2) $b$, (3) $\hat{Y}$, (4) $H$, (5) $SSE$,
-(6) $s^2\{b\}$, (7) $s^2\{pred\}$ when $X_h = 30$.
-\item{} From part (a), obtain the following: (1) $s^2\{b_0\}$; (2) $s\{b_0,b_1\}$; (3) $s\{b_1\}$.
-\end{enumerate}
+Refer to Brand Preference Problem 6.5: Calculate $R_{Y1}^2$, $R_{Y2}^2$, $R_{|2}^2$, $R_{Y1|2}^2$, $R_{Y2|1}^2$, and $R^2$. Explain what each coefficient measures and interpret your results.
 
 \subsection{Answer:}
-
-First, let's read in the data.
-
-<<plasticdata>>=
-Plastics <- read.table("DataOne.txt")
-names(Plastics) <- c("Hardness","Time")
-@
-
-\begin{enumerate}[a)]
-\item{}
-\begin{enumerate}[1)]
-\item{} $(X'X)^{-1}$:
-<<xxxxxx>>=
-# X is time
-X <- cbind(rep(1,length(Plastics$Time)),Plastics$Time)
-solve(t(X) %*% X)
-@
-\item{} $b$:
-<<getb>>=
-A <- solve(t(X) %*% X) %*% t(X)
-Y <- Plastics$Hardness
-b <- A %*% Y
-b
-@
-\item{} $\hat{Y}$:
-<<haty>>=
-hatY <- X %*% b
-hatY
-@
-\item{} $H$:
-<<HHHHHH>>=
-H <- X %*% A
-H
-@
-\item{} $SSE$:
-<<SSE>>=
-e <- Y - hatY
-SSE <- t(e) %*% e
-SSE
-@
-\item{} $s^2\{b\}$:
-<<s2things>>=
-MSE <- mean(e^2)
-s2_b <- MSE*solve(t(X) %*% X)
-s2_b
-@
-\item{} $s^2\{pred\}$:
-<<s2pred>>=
-X_h <- matrix(data=c(1, 30),nrow=2,ncol=1,byrow=T)
-s2_pred <- MSE*(1 + t(X_h) %*% solve(t(X) %*% X) %*% X_h)
-s2_pred
-@
-\end{enumerate}
-\item{}
-\begin{enumerate}[1)]
-\item{} $s^2\{b_0\}$:
-<<s2bo>>=
-s2_b0 <- s2_b[1,1]
-s2_b0
-@
-\item{} $s\{b_0,b_1\}$:
-<<s2b0b1>>=
-s_b0b1 <- s2_b[1,2]
-s_b0b1
-@
-\item{} $s\{b_1\}$:
-<<s_b1>>=
-s_b1 <- sqrt(s2_b[2,2])
-s_b1
-@
-\end{enumerate}
-\end{enumerate}
 
 %-------------------------------------------
-\section{5.29}
+\section{7.24}
 %--------------------------------------------
 
-Consider the least squares estimator $b$ given in (5.60). Using matrix methods, show that $b$ is an
-unbiased estimator.
+Refer to Brand Preference Problem 6.5:
+
+\begin{enumerate}[a)]
+\item{} Fit first-order simple linear regression model (2.1) for relating brand liking ($Y$) to moisture content ($X_1$). State the fitted regression function.
+\item{} Compare the estimated regression coefficient for moisture content obtained in part (a) with the corresponding coefficient 0btained in Problem 6.5b. What do you find?
+\item{} Does $SSR(X_1)$ equal $SSR(X_1|X_2)$ here? If not, is the difference substantial?
+\item{} Refer to the correlation matrix obtained in Problem 6.5a. What bearing does this have on your findings in parts (b) and (c)?
+\end{enumerate}
 
 \subsection{Answer:}
-
-The equation for the least squares estimator $b$ is:
-$$ b = (X'X)^{-1}X'Y $$
-Substitute for $Y$:
-$$ b = (X'X)^{-1}X'(\beta{}X + \epsilon{}) $$
-Find the expectation of $b$:
-$$ E(b) = E((X'X)^{-1}X'(X\beta{} + \epsilon{})) $$
-$$ E(b) = E((X'X)^{-1}(X'X)\beta{} + (X'X)^{-1}X'\epsilon{}) $$
-Recalling that an assumption of the model is that the errors are uncorrelated with the predictors:
-$$ E(b) = \beta{} + E((X'X)^{-1}X')E(\epsilon{}) $$
-And that the expectation of the errors is 0:
-$$ E(b) = \beta{} $$
-Showing that b is unbiased for $\beta$
 
 %-------------------------------------------
-\section{6.2}
+\section{7.28}
 %--------------------------------------------
 
-Set up the $X$ matrix and $\beta{}$ vector for each of the following regression models (assume $i = 1, ... ,5$):
-\begin{enumerate}[a)]
-\item{} $Y_i = \beta{}_1X_{i1} + \beta{}_2X_{i2} + \beta{}_3X_{i1}^2 + \epsilon{}_i$;
-\item{} $\sqrt{Y_i} = \beta{}_0 + \beta{}_1X_{i1} + \beta{}_2log_{10}X_{i2} + \epsilon{}_i$
+\begin{enumerate}[a]
+\item{} Define each of the following exta sums of squares: (I) $SSR(X_5X_1)$, (2) $SSR(X_3,X_4|X_1)$, (3) $SSR(X4|X_1,X_2,X_3)$.
+\item{} For a multiple regression model with five $X$ variables, what is the relevant exta sum of squares for testing whether or not $\beta{}_5 = O$? whether or not $\beta{}_2 = \beta{}_4 = O$?
 \end{enumerate}
 
 \subsection{Answer:}
-
-\begin{enumerate}[a)]
-\item{} $$ X = \begin{pmatrix}
-                X_{1,1} & X_{1,2} & X_{1,1}^2 \\
-                X_{2,1} & X_{2,2} & X_{2,1}^2 \\
-                X_{3,1} & X_{3,2} & X_{3,1}^2 \\
-                X_{4,1} & X_{4,2} & X_{4,1}^2 \\
-                X_{5,1} & X_{5,2} & X_{5,1}^2 \\
-                \end{pmatrix} $$
-        $$ \beta{} = \begin{pmatrix}
-                      \beta{}_1 \\
-                      \beta{}_2 \\
-                      \beta{}_3 \\
-                      \end{pmatrix} $$
-\item{} $$ X = \begin{pmatrix}
-                1 & X_{1,1} & log_{10}X_{1,2} \\
-                1 & X_{2,1} & log_{10}X_{2,2} \\
-                1 & X_{3,1} & log_{10}X_{3,2} \\
-                1 & X_{4,1} & log_{10}X_{4,2} \\
-                1 & X_{5,1} & log_{10}X_{5,2} \\
-                \end{pmatrix} $$
-        $$ \beta{} = \begin{pmatrix}
-                      \beta{}_0 \\
-                      \beta{}_1 \\
-                      \beta{}_2 \\
-                      \end{pmatrix} $$
-\end{enumerate}
 
 %-------------------------------------------
-\section{6.22}
+\section{7.29}
 %--------------------------------------------
 
-For each of the following regression models, indicate whether it is a general linear regression model. If it is not, state whether it can be expressed in the form of (6.7) by a suitable transformation:
+Show that:
 \begin{enumerate}[a)]
-\item{} $ Y_i = \beta{}_0 + \beta{}_1X_{i1} + \beta{}_2log_{10}X_{i2} + \beta{}_3X_{i1}^2 + \epsilon{}_i $
-\item{} $ Y_i = \epsilon{}_iexp(\beta{}_0 + \beta{}_1X_{i1} + \beta{}_2X_{i2}^2) $
-\item{} $ Y_i = log_{10}(\beta{}_1X_{i1}) + \beta{}_2X_{i2} + \epsilon{}_i $
-\item{} $ Y_i = \beta{}_0 exp(\beta{}_1X_{i1}) + \epsilon{}_i $
-\item{} $ Y_i = [1 + exp(\beta{}_0 + \beta{}_1X_{i1} + \epsilon{}_i)]^{-1} $
+\item{} $SSR(X_1,X_2,X_3,X_4) = SSR(X_1) + SSR(X_2,X_3|X_1) + SSR(X4|X_1,X_2,X_3)$.
+\item{} $SSR(X_1,X_2,X_3,X_4) = SSR(X_2,X_3) + SSR(X_1|X_2,X_3) + SSR(X4|X_1,X_2,X_3)$.
 \end{enumerate}
 
 \subsection{Answer:}
-
-\begin{enumerate}[a)]
-\item{} Yes, the model is a GLM.
-\item{} No, and there is no suitable transformation. $Y' = ln(Y)$ appears to be a potential candidate, but the term $ln(\epsilon)$ would remain - this would not be a GLM.
-\item{} No, and there is no suitable transformation.
-\item{} No, and there is no suitable transformation.
-\item{} No, but there is a suitable transformation: $Y' = ln(Y^{-1} - 1)$.
-\end{enumerate}
 
 %-------------------------------------------
-\section{6.27}
+\section{7.30}
 %--------------------------------------------
 
-In a small-scale regression study, the following data were obtained:
+Refer to Brand Preference Problem 6.5:
 
-\begin{tabular}{c c c c c c c}
-$i$: & 1 & 2 & 3 & 4 & 5 & 6 \\ \hline
-$X_{i1}$: & 7 & 4 & 16 & 3 & 21 & 8 \\
-$X_{i2}$: & 33 & 41 & 7 & 49 & 5 & 31 \\
-$Y_i$: & 42 & 33 & 75 & 28 & 91 & 55 \\
-\end{tabular}
-
-Assume that regression model (6.1) with independent normal error terms is appropriate. Using matrix methods, obtain (a) $b$; (b) $e$; (c) $H$; (d) $SSR$; (e) $s^2\{b\}$; (f) $\hat{Y}_h$ when $X_{h1} = 10$, $X_{h2} = 30$; (g) $s^2\{\hat{Y}_h\}$ when $X_{h1} = 10$, $X_{h2} = 30$.
+\begin{enumerate}[a)]
+\item{} Regress $Y$ on $X_1$ using simple linear regression model (2.1) and obtain the residuals.
+\item{} Regress $X_1$ on $X_2$ using simple linear regression model (2.1) and obtain the residuals.
+\item{} Calculate the coefficient of simple correlation between the two sets of residuals and show that it equals $r_{Y1|2}$.
+\end{enumerate}
 
 \subsection{Answer:}
 
-First, let's construct the data:
+%-------------------------------------------
+\section{8.11}
+%--------------------------------------------
 
-<<makingthedata>>=
-X <- cbind(rep(1,6),
-           c(7,4,16,3,21,8),
-           c(33,41,7,49,5,31))
-Y <- matrix(c(42,33,75,28,91,55),nrow=6,ncol=1,byrow=T)
-@
+Refer to Brand Preference Problem 6.5:
 
 \begin{enumerate}[a)]
-\item{} $b$:
-<<getbagain>>=
-A <- solve(t(X) %*% X) %*% t(X)
-b <- A %*% Y
-b
-@
-\item{} $e$:
-<<finde>>=
-hatY <- X %*% b
-e <- Y - hatY
-e
-@
-\item{} $H$:
-<<H>>=
-H <- X %*% A
-H
-@
-\item{} $SSR$:
-<<SSR>>=
-J <- matrix(1,nrow=6,ncol=6)
-SSR <- t(Y) %*% (H - (1/6)*J) %*% Y
-SSR
-@
-\item{} $s^2\{b\}$:
-<<agains2b>>=
-MSE <- mean(e^2)
-s2_b <- MSE*solve(t(X) %*% X)
-s2_b
-@
-\item{} $\hat{Y}_h$ when $X_h1 = 10$ and $X_h2 = 30$:
-<<anotherinference>>=
-X_h <- matrix(c(1,10,30),nrow=3,ncol=1,byrow=T)
-hatY_h <- t(X_h) %*% b
-hatY_h
-@
-\item{} $s^2\{\hat{Y}_h\}$ when $X_h1 = 10$ and $X_h2 = 30$:
-<<mores2sssssssss>>=
-s2hatY_h <- t(X_h) %*% s2_b %*% X_h
-s2hatY_h
-@
+\item{} Fit regression model (8.22).
+\item{} Test whether or not the interaction term can be dropped from the model; use $\alpha{} = .05$. State the alternatives, decision rule, and conclusion.
 \end{enumerate}
+
+\subsection{Answer:}
+
+%-------------------------------------------
+\section{8.16}
+%--------------------------------------------
+
+Refer to Grade point average Problem 1.19. An assistant to the director of admissions conjectured that the predictive power of the model could be improved by adding information on whether the student had chosen a major field of concentration at the time the application was submitted. Assume that regression model (8.33) is appropriate, where $X_1$ is entrance test score and $X_2 = 1$ if student had indicated a major field of concentration at the time of application and 0 if the major field was undecided. 
+
+\begin{enumerate}[a)]
+\item{} Explain how each regression coefficient in model (8.33) is interpreted here.
+\item{} Fit the regression model and state the estimated regression function.
+\item{} Test whether the $X_2$ variable can be dropped from the regression model; use $\alpha{} = .01$. State the alternatives. decision rule. and conclusion.
+\item{} Obtain the residuals for regression model (8.33) and plot them against $X1X_2$.Is there any evidence in your plot that it would be helpful to include an interaction term in the model?
+\end{enumerate}
+
+\subsection{Answer:}
+
+%-------------------------------------------
+\section{8.20}
+%--------------------------------------------
+
+Refer to Grade point average Problems 1.19 and 8.16:
+
+\begin{enumerate}[a)]
+\item{} Fit regression model (8.49) and state the estimated regression function.
+\item{} Test whether the interaction term can be dropped from the model; use $\alpha{} = .05$. State the alternatives. decision rule, and conclusion. If the interaction term cannot be dropped from the model, describe the nature of the interaction effect.
+\end{enumerate}
+
+\subsection{Answer:}
+
+%-------------------------------------------
+\section{8.42}
+%--------------------------------------------
+
+Refer to Market share data set in Appendix C.3. Company executives want to be able to predict market share of their product ($Y$) based on merchandise price ($X_1$), the gross Nielsen rating pOints ($X_1$, an index of the amount of advertising exposure that the product received); the presence or absence of a wholesale pricing discount ($X_3 = 1$ if discount present: otherwise $X_3 = 0$); the presence or absence of a package promotion during the period ($X_4 = 1$ if promotion present: otherwise $X_4 = 0$): and year ($X_5$). Code year as a nominal level variable and use 2000 as the reference year.
+
+\begin{enumerate}[a)]
+\item{} Fit a first-order regression model. Plot the residuals against the fitted values. How well does the first-order model appear to fit the data?
+\item{} Re-fit the model in part (a). After adding all second-order terms involving only the quantitative predictors. Test whether or not all quadratic and interaction terms can be dropped from the regression model: use $\alpha = .05$. State the alternatives. decision rule, and conclusion.
+\item{} In part (a), test whether advertising index ($X_2$) and year ($X_1$) can be dropped from the model; use $\alpha = .05$. State the alternatives, decision rule, and conclusion.
+\end{enumerate}
+
+\subsection{Answer:}
 
 %-------------------------------------------
 \section{System Information}
