@@ -90,7 +90,7 @@ fitsum
 @
 
 So, the estimated model is:
-$$ Y_i = \Sexpr{fitsum$coefficients["(Intercept)","Estimate"]} + \Sexpr{fitsum$coefficients["(Intercept)","Estimate"]}X_{i1} + \Sexpr{fitsum$coefficients["(Intercept)","Estimate"]}X_{i2} $$
+$$ Y_i = \Sexpr{fitsum$coefficients["(Intercept)","Estimate"]} + \Sexpr{fitsum$coefficients["Moisture.Content","Estimate"]}X_{i1} + \Sexpr{fitsum$coefficients["Sweetness","Estimate"]}X_{i2} $$
 
 \item{} Now let's examine the residuals:
 
@@ -131,14 +131,17 @@ Clearly, we cannot reject the null hypothesis that the model exhibits homoskedas
 Refer to Brand Preference Problem 6.5:
 
 \begin{enumerate}[a)]
-\item{} Obtain the analysis of variance table that decomposes the regression sum of squares into extra sums of squares associated with $X$, and with $X_2$ , given $X_1$.
+\item{} Obtain the analysis of variance table that decomposes the regression sum of squares into extra sums of squares associated with $X_1$, and with $X_2$ , given $X_1$.
 \item{} Test whether $X_2$ can be dropped from the regression model given that $X_1$ is retained. Use the $F^*$ test statistic and level of significance .01. State the alternatives, decision rule, and conclusion. What is the P-value of the test?
 \end{enumerate}
 
 \subsection{Answer:}
 
 \begin{enumerate}[a)]
-\item{} 
+\item{} Let's make the partial sum of squares table
+<<ppsumsq>>=
+
+@
 
 \end{enumerate}
 
@@ -158,23 +161,63 @@ Refer to Brand Preference Problem 6.5:
 
 \begin{enumerate}[a)]
 \item{} Fit first-order simple linear regression model (2.1) for relating brand liking ($Y$) to moisture content ($X_1$). State the fitted regression function.
-\item{} Compare the estimated regression coefficient for moisture content obtained in part (a) with the corresponding coefficient 0btained in Problem 6.5b. What do you find?
+\item{} Compare the estimated regression coefficient for moisture content obtained in part (a) with the corresponding coefficient obtained in Problem 6.5b. What do you find?
 \item{} Does $SSR(X_1)$ equal $SSR(X_1|X_2)$ here? If not, is the difference substantial?
 \item{} Refer to the correlation matrix obtained in Problem 6.5a. What bearing does this have on your findings in parts (b) and (c)?
 \end{enumerate}
 
 \subsection{Answer:}
 
+\begin{enumerate}[a)]
+\item{} Let's first fit the first order model:
+
+<<firstorder>>=
+fo <- lm(Brand.Liking~Moisture.Content,data=BrandPreference)
+fosum <- summary(fo)
+fosum
+@
+
+The estimated function is:
+$$ Y_i = \Sexpr{fosum$coefficients["(Intercept)","Estimate"]} + \Sexpr{fosum$coefficients["Moisture.Content","Estimate"]}X_{i1} $$
+
+\item{} Let's compare the estimated models:
+
+<<compare>>=
+# two predictor model
+fitsum
+# one predictor model
+fosum
+@
+
+We find that the coefficients are the same in both models for Sweetness.
+
+\item{} Let's find $SSR(X_1|X_2)$:
+
+\end{enumerate}
+
 %-------------------------------------------
 \section{7.28}
 %--------------------------------------------
 
 \begin{enumerate}[a]
-\item{} Define each of the following exta sums of squares: (I) $SSR(X_5X_1)$, (2) $SSR(X_3,X_4|X_1)$, (3) $SSR(X4|X_1,X_2,X_3)$.
+\item{} Define each of the following exta sums of squares: (I) $SSR(X_5|X_1)$, (2) $SSR(X_3,X_4|X_1)$, (3) $SSR(X_4|X_1,X_2,X_3)$.
 \item{} For a multiple regression model with five $X$ variables, what is the relevant exta sum of squares for testing whether or not $\beta{}_5 = O$? whether or not $\beta{}_2 = \beta{}_4 = O$?
 \end{enumerate}
 
 \subsection{Answer:}
+
+\begin{enumerate}[a)]
+\item{}
+\begin{enumerate}[1)]
+\item{} $$ SSR(X_5|X_1) = SSR(X_1,X_5) - SSR(X_1) $$
+\item{} $$ SSR(X_3,X_5|X_1) = SSR(X_1,X_3,X_5) - SSR(X_1) $$
+\item{} $$ SSR(X_4|X_1,X_2,X_3) = SSR(X_1,X_2,X_3,X_4) - SSR(X_1,X_2,X_3) $$
+\end{enumerate}
+\item{} The relevant sum of squares for whether or not $\beta{}_5 = 0$:
+$$ SSR(X_5|X_1,X_2,X_3,X_4,X_5) $$
+The relevant sum of squares for whether or not $\beta{}_2 = \beta{}_4 = O$:
+$$ SSR(X_2,X_4|X_1,X_3,X_5) $$
+\end{enumerate}
 
 %-------------------------------------------
 \section{7.29}
@@ -187,6 +230,17 @@ Show that:
 \end{enumerate}
 
 \subsection{Answer:}
+
+\begin{enumerate}[a)]
+\item{} $$ SSR(X_1) + SSR(X_2,X_3|X_1) + SSR(X4|X_1,X_2,X_3) $$
+$$ = SSR(X_1) + SSR(X_1,X_2,X_3) - SSR(X_1) + SSR(X_1,X_2,X_3,X_4) - SSR(X_1,X_2,X_3) $$
+$$ = SSR(X_1,X_2,X_3,X_4) $$
+as required.
+\item{} $$ SSR(X_2,X_3) + SSR(X_1|X_2,X_3) + SSR(X4|X_1,X_2,X_3) $$
+$$ = SSR(X_2,X_3) + SSR(X_1,X_2,X_3) - SSR(X_2,X_3) + SSR(X_1,X_2,X_3,X_4) - SSR(X_1,X_2,X_3) $$
+$$ = SSR(X_1,X_2,X_3,X_4) $$
+as required.
+\end{enumerate}
 
 %-------------------------------------------
 \section{7.30}
@@ -202,6 +256,28 @@ Refer to Brand Preference Problem 6.5:
 
 \subsection{Answer:}
 
+\begin{enumerate}[a)]
+\item{} We have already previously estimated this mode, but we will obtain the residuals:
+<<morebrands>>=
+res_fo <- residuals(fo)
+print(res_fo)
+@
+\item{} Now let's regress $X_1$ on $X_2$:
+<<morebrands2>>=
+xonx <- lm(Moisture.Content~Sweetness,data=BrandPreference)
+res_xonx <- residuals(xonx)
+print(res_xonx)
+@
+\item{} The simple correlation coefficient between the residuals for the two models is:
+<<corresids>>=
+cor(x=res_fo,y=res_xonx)
+@
+Now let's show that is is roughly equal to $r_{Y1|2}$:
+<<roughlyequal>>=
+
+@
+\end{enumerate}
+
 %-------------------------------------------
 \section{8.11}
 %--------------------------------------------
@@ -215,6 +291,20 @@ Refer to Brand Preference Problem 6.5:
 
 \subsection{Answer:}
 
+\begin{enumerate}[a)]
+\item{} Let's fit the model:
+<<yetanotherbpodel>>=
+wint <- lm(Brand.Liking~Moisture.Content+Sweetness+Moisture.Content*Sweetness,data=BrandPreference)
+wint_sum <- summary(wint)
+wint_sum
+@
+\item{} Now let's test and see if the interaction term can be removed from the model:
+
+
+
+
+\end{enumerate}
+
 %-------------------------------------------
 \section{8.16}
 %--------------------------------------------
@@ -225,10 +315,33 @@ Refer to Grade point average Problem 1.19. An assistant to the director of admis
 \item{} Explain how each regression coefficient in model (8.33) is interpreted here.
 \item{} Fit the regression model and state the estimated regression function.
 \item{} Test whether the $X_2$ variable can be dropped from the regression model; use $\alpha{} = .01$. State the alternatives. decision rule. and conclusion.
-\item{} Obtain the residuals for regression model (8.33) and plot them against $X1X_2$.Is there any evidence in your plot that it would be helpful to include an interaction term in the model?
+\item{} Obtain the residuals for regression model (8.33) and plot them against $X_1X_2$. Is there any evidence in your plot that it would be helpful to include an interaction term in the model?
 \end{enumerate}
 
 \subsection{Answer:}
+
+\begin{enumerate}[a)]
+\item{} $\beta{}_1$ can be interpreted as the effect of a one unit increase in entrance test score - a one unit increase in entrance test score yeilds a $\beta{}_1$ unit increase in a student's first year GPA, on average. $\beta{}_2$ can be interpreted as the average difference in GPA points associated with students who stated thier major field at the time of application irrespective of entrance test score.
+\item{} Fit the model:
+<<schools>>=
+GPA <- read.table(file='8.16.txt',stringsAsFactors=F)
+names(GPA) <- c("GPA","Entrance.Test","Major.Indicated")
+gpafit <- lm(GPA~Entrance.Test+Major.Indicated,data=GPA)
+gpafit_sum <- summary(gpafit)
+gpafit_sum
+@
+The estimated model is:
+$$ Y_i = \Sexpr{gpafit_sum$coefficients["(Intercept)","Estimate"]} + \Sexpr{gpafit_sum$coefficients["Entrance.Test","Estimate"]}X_{i1} + \Sexpr{gpafit_sum$coefficients["Entrance.Test","Estimate"]}X_{i2} $$
+\item{} Construct a test:
+
+
+
+\item{} Let's plot the residuals vs the variable $X_1X_2$:
+<<moreresplots>>=
+qplot(x=residuals(gpafit),y=Entrance.Test*Major.Indicated,data=GPA,xlab="Residuals",ylab="Entrance Test Score times Indicator Variable for Major Declaration")
+@
+There appears to be a positive relationship between the residuals and $X_1X_2$ when $X_2 = 0$. It may be beneficial to include the term.
+\end{enumerate}
 
 %-------------------------------------------
 \section{8.20}
@@ -243,19 +356,46 @@ Refer to Grade point average Problems 1.19 and 8.16:
 
 \subsection{Answer:}
 
+\begin{enumerate}[a)]
+\item{} Fit the model:
+<<interactionmodel>>=
+intfit <- lm(GPA~Entrance.Test+Major.Indicated+Entrance.Test*Major.Indicated,data=GPA)
+intfit_sum <- summary(intfit)
+intfit_sum
+@
+The estimated model is:
+$$ Y_i = \Sexpr{intfit_sum$coefficients["(Intercept)","Estimate"]} + \Sexpr{intfit_sum$coefficients["Entrance.Test","Estimate"]}X_{i1} + \Sexpr{intfit_sum$coefficients["Major.Indicated","Estimate"]}X_{i2} + \Sexpr{intfit_sum$coefficients["Entrance.Test:Major.Indicated","Estimate"]}X_{i1}X_{i2} $$
+\item{} Test whether the interaction term is beneficial to the model:
+
+
+
+
+\end{enumerate}
+
 %-------------------------------------------
 \section{8.42}
 %--------------------------------------------
 
-Refer to Market share data set in Appendix C.3. Company executives want to be able to predict market share of their product ($Y$) based on merchandise price ($X_1$), the gross Nielsen rating pOints ($X_1$, an index of the amount of advertising exposure that the product received); the presence or absence of a wholesale pricing discount ($X_3 = 1$ if discount present: otherwise $X_3 = 0$); the presence or absence of a package promotion during the period ($X_4 = 1$ if promotion present: otherwise $X_4 = 0$): and year ($X_5$). Code year as a nominal level variable and use 2000 as the reference year.
+Refer to Market share data set in Appendix C.3. Company executives want to be able to predict market share of their product ($Y$) based on merchandise price ($X_1$), the gross Nielsen rating points ($X_1$, an index of the amount of advertising exposure that the product received); the presence or absence of a wholesale pricing discount ($X_3 = 1$ if discount present: otherwise $X_3 = 0$); the presence or absence of a package promotion during the period ($X_4 = 1$ if promotion present: otherwise $X_4 = 0$): and year ($X_5$). Code year as a nominal level variable and use 2000 as the reference year.
 
 \begin{enumerate}[a)]
 \item{} Fit a first-order regression model. Plot the residuals against the fitted values. How well does the first-order model appear to fit the data?
 \item{} Re-fit the model in part (a). After adding all second-order terms involving only the quantitative predictors. Test whether or not all quadratic and interaction terms can be dropped from the regression model: use $\alpha = .05$. State the alternatives. decision rule, and conclusion.
-\item{} In part (a), test whether advertising index ($X_2$) and year ($X_1$) can be dropped from the model; use $\alpha = .05$. State the alternatives, decision rule, and conclusion.
+\item{} In part (a), test whether advertising index ($X_2$) and year ($X_5$) can be dropped from the model; use $\alpha = .05$. State the alternatives, decision rule, and conclusion.
 \end{enumerate}
 
 \subsection{Answer:}
+
+\begin{enumerate}[a)]
+\item{} First, let's read in the data and recode the year variable into an indicator with a base of the year 2000:
+<<readdata>>=
+MarketShare <- read.table('MarketShare.txt',stringsAsFactors=F)
+names(MarketShare) <- c("id","Market.Share","Merchandise.Price","Nielson.Rating","Wholesale.Price.Discount","Package.Promotion","Month","Year")
+MarketShare$i1999 <- 1*(MarketShare$Year == 1999)
+MarketShare$i2001 <- 1*(MarketShare$Year == 2001) 
+MarketShare$i2002 <- 1*(MarketShare$Year == 2002)
+@
+\end{enumerate}
 
 
 %-------------------------------------------
