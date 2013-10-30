@@ -52,12 +52,77 @@ In a small-scale experimental study of the relation between degree of brand liki
 \item{} Obtain the scatter plot matrix and the correlation matrix. What information do these diagnostic aids provide here?
 \item{} Fit regession model (6.1) to the data. State the estimated regression function. How is $b_1$ interpreted here?
 \item{} Obtain the residuals and prepare a box plot of the residuals. What information does this plot provide?
-\item{} Plot the residuals against $Y$, $X_1$, $X_2$ , and $X_1$ $X_2$ on separate graphs. Also prepare a normal
-probability plot. Interpret the plots and summarize your findings.
+\item{} Plot the residuals against $Y$, $X_1$, $X_2$ , and $X_1$ $X_2$ on separate graphs. Also prepare a normal probability plot. Interpret the plots and summarize your findings.
 \item{} Conduct the Breusch-Pagan test for constancy of the error variance, assuming $log(\sigma{}^2) = \gamma{}_0 + \gamma{}_1X_{i1} + \gamma{}_2X_{i2}$: use $\alpha{} = .01$. State the alternaltives, decision rule, and conclusion.
 \end{enumerate}
 
 \subsection{Answer:}
+
+\begin{enumerate}[a)]
+\item{} First let's load the data:
+
+<<loadit>>=
+BrandPreference <- read.table(file="6.5.txt",stringsAsFactors=F)
+names(BrandPreference) <- c("Brand.Liking","Moisture.Content","Sweetness")
+@
+
+Then let's generate the scatter plot matrix:
+
+<<scatterplot,fig=TRUE>>=
+require(ggplot2)
+require(reshape2)
+melted <- melt(BrandPreference,id.vars=c("Brand.Liking"))
+g <- ggplot(data=melted,aes(Brand.Liking,value))
+g + geom_point() + facet_wrap(~variable)
+@
+
+And now let's compute the correlation matrix:
+
+<<correlationmatrix>>=
+cor(BrandPreference)
+@
+
+\item{} Now let's estimate the model $Y_i = b_0 + b_1X_{i1} + b_2X_{i2} + \epsilon{}_i$:
+<<makemodel>>=
+fit <- lm(Brand.Liking~Moisture.Content+Sweetness,data=BrandPreference)
+fitsum <- summary(fit)
+fitsum
+@
+
+So, the estimated model is:
+$$ Y_i = \Sexpr{fitsum$coefficients["(Intercept)","Estimate"]} + \Sexpr{fitsum$coefficients["(Intercept)","Estimate"]}X_{i1} + \Sexpr{fitsum$coefficients["(Intercept)","Estimate"]}X_{i2} $$
+
+\item{} Now let's examine the residuals:
+
+<<resids,fig=TRUE>>=
+boxplot(fit$residuals)
+@
+
+This plot shows that the residuals are roughly normally distributed around 0.
+
+\item{} Let's plot the residuals against $Y$, $X_1$, $X_2$ , and $X_1$ $X_2$:
+ 
+<<moreplots>>=
+qplot(x=fit$residuals,y=fit$model$Brand.Liking,xlab="Residuals",ylab="Brand Liking")
+qplot(x=fit$residuals,y=fit$model$Moisture.Content,xlab="Residuals",ylab="Moisture Content")
+qplot(x=fit$residuals,y=fit$model$Sweetness,xlab="Residuals",ylab="Sweetness")
+qplot(x=fit$residuals,y=fit$model$Moisture.Content*fit$model$Sweetness,xlab="Residuals",ylab="Moisture Content times Sweetness")
+qplot(sample=fit$residuals,stat="qq",main="Normal Probability Plot for Model Residuals")
+@
+
+The plots indicate the the residuals are not only distributed normally, but are uncorrelated with either any of the predictors or the outcome. The model assumptions hold.
+
+\item{} Let's perform the Breush-Pagan test for heteroskedasticity of the error terms
+
+<<bptest>>=
+require(lmtest)
+pb <- bptest(fit,studentize=F)
+pb
+@
+
+Clearly, we cannot reject the null hypothesis that the model exhibits homoskedasticity.
+
+\end{enumerate}
 
 %-------------------------------------------
 \section{7.3}
@@ -71,6 +136,11 @@ Refer to Brand Preference Problem 6.5:
 \end{enumerate}
 
 \subsection{Answer:}
+
+\begin{enumerate}[a)]
+\item{} 
+
+\end{enumerate}
 
 %-------------------------------------------
 \section{7.12}
