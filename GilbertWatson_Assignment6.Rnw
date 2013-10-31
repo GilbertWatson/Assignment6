@@ -73,7 +73,9 @@ require(ggplot2)
 require(reshape2)
 melted <- melt(BrandPreference,id.vars=c("Brand.Liking"))
 g <- ggplot(data=melted,aes(Brand.Liking,value))
-g + geom_point() + facet_wrap(~variable)
+g + geom_point() + facet_wrap(~variable,scales="free_y") + 
+  xlab("Brand Liking") + 
+  ylab("Value")
 @
 
 And now let's compute the correlation matrix:
@@ -81,6 +83,8 @@ And now let's compute the correlation matrix:
 <<correlationmatrix>>=
 cor(BrandPreference)
 @
+
+These aids show that while both moisture content and sweetness are correlated with brand liking, that moisture content and sweetness are not correlated with each other.
 
 \item{} Now let's estimate the model $Y_i = b_0 + b_1X_{i1} + b_2X_{i2} + \epsilon{}_i$:
 <<makemodel>>=
@@ -91,6 +95,8 @@ fitsum
 
 So, the estimated model is:
 $$ Y_i = \Sexpr{fitsum$coefficients["(Intercept)","Estimate"]} + \Sexpr{fitsum$coefficients["Moisture.Content","Estimate"]}X_{i1} + \Sexpr{fitsum$coefficients["Sweetness","Estimate"]}X_{i2} $$
+
+An interpretation for $b_1$ is that for every one unit increase in moisture content, brand liking increases by $\Sexpr{fitsum$coefficients["Moisture.Content","Estimate"]}$ units.
 
 \item{} Now let's examine the residuals:
 
@@ -135,17 +141,33 @@ qplot(sample=fit$residuals,
       main="Normal Probability Plot for Model Residuals")
 @
 
-The plots indicate the the residuals are not only distributed normally, but are uncorrelated with either any of the predictors or the outcome. The model assumptions hold.
+The plots indicate the the residuals are not only distributed normally, but are uncorrelated with any of the predictors or the outcome variable. The model assumptions hold.
 
-\item{} Let's perform the Breush-Pagan test for heteroskedasticity of the error terms
+\item{} Let's perform the Breush-Pagan test for heteroskedasticity of the error terms. The alternatives are as follows:
+
+$$ H_0: \gamma{}_1 = \gamma{}_2 =  0 $$
+$$ H_a: \gamma{}_1 \neq{} 0 \text{ or } \gamma{}_2 \neq{} 0 $$
+
+The decision rule is reject $H_0$ if:
+
+$$ \chi{}_{BP}^2 > \chi{}_{BP}^2(0.99,2) $$
+
+Let's compute the test statistic and critical value:
 
 <<bptest>>=
-require(lmtest)
-pb <- bptest(fit,studentize=F)
-pb
+# compute test statistic
+efit <- lm(I(fit$residuals^2)~fit$model$Moisture.Content+fit$model$Sweetness)
+SSR_star <- sum(anova(efit)$`Sum Sq`) - deviance(efit)
+SSEfit <- deviance(fit)
+chisq_bp <- (SSR_star/2)/(SSEfit/length(fit$model$Brand.Liking))^2
+
+# compute the critical value
+cv <- qchisq(0.99,2)
+
+print(paste0("ChiSqr^2_{BP} is ",chisq_bp," and the critical value is ",cv,"."))
 @
 
-Clearly, we cannot reject the null hypothesis that the model exhibits homoskedasticity.
+Clearly, we cannot reject the null hypothesis - the model has constant error variance.
 
 \end{enumerate}
 
@@ -178,7 +200,16 @@ ssr_x2x1 <- deviance(fo) - deviance(fit)
 ssr_x2x1
 @
 
-So, the extra sum of squares, $SSR(X_2|X_1) = \Sexpr{ssr_x2x1}$.
+So, the extra sum of squares, $SSR(X_2|X_1) = \Sexpr{ssr_x2x1}$. The extra sum of squares table would look like the following:
+
+\begin{tabular}{l l l l}
+Source of Variation & SS & df & MS \\ \hline
+Regression & $\Sexpr{sum(anova(fit)$`Sum Sq`)-deviance(fit)}$ & 2 & $\Sexpr{sum(anova(fit)$`Sum Sq`)-deviance(fit)}$ \\
+Moisture Content & $\Sexpr{sum(anova(fo)$`Sum Sq`)-deviance(fo)}$ & 1 & $\Sexpr{sum(anova(fo)$`Sum Sq`)-deviance(fo)}$ \\
+Moisture Content|Sweetness & $\Sexpr{ssr_x2x1}$ & 1 & $\Sexpr{ssr_x2x1}$ \\
+Error & $\Sexpr{deviance(fit)}$ & 13 & $\Sexpr{anova(fit)["Residuals","Mean Sq"]}$ \\
+Total & $\Sexpr{sum(anova(fit)$`Sum Sq`)}$ & 12 \\
+\end{tabular}
 
 \item{} Now let's test to see if we can drop $X_2$ given $X_1$. The alternatives are as follows:
 
@@ -215,7 +246,7 @@ print(paste0("The p-value for F^star is: ",pval))
 \section{7.12}
 %--------------------------------------------
 
-Refer to Brand Preference Problem 6.5: Calculate $R_{Y1}^2$, $R_{Y2}^2$, $R_{|2}^2$, $R_{Y1|2}^2$, $R_{Y2|1}^2$, and $R^2$. Explain what each coefficient measures and interpret your results.
+Refer to Brand Preference Problem 6.5: Calculate $R_{Y1}^2$, $R_{Y2}^2$, $R_{12}^2$, $R_{Y1|2}^2$, $R_{Y2|1}^2$, and $R^2$. Explain what each coefficient measures and interpret your results.
 
 \subsection{Answer:}
 
@@ -236,7 +267,13 @@ r2_y2 <- anovafit["Sweetness","Sum Sq"]/sum(anovafit$`Sum Sq`)
 r2_y2
 @
 
-\item{} $R_{|2}^2$:
+\item{} $R_{12}^2$:
+
+<<y2asdfasdfasdfas>>=
+r2_12 <- (anovafit["Sweetness","Sum Sq"]+anovafit["Moisture.Content","Sum Sq"])/
+  sum(anovafit$`Sum Sq`)
+r2_12
+@
 
 \item{} $R_{Y1|2}^2$:
 
@@ -319,7 +356,7 @@ Clearly $SSR(X_1|X_2)$ and $SSR(X_1)$ are both the same.
 \section{7.28}
 %--------------------------------------------
 
-\begin{enumerate}[a]
+\begin{enumerate}[a)]
 \item{} Define each of the following exta sums of squares: (I) $SSR(X_5|X_1)$, (2) $SSR(X_3,X_4|X_1)$, (3) $SSR(X_4|X_1,X_2,X_3)$.
 \item{} For a multiple regression model with five $X$ variables, what is the relevant exta sum of squares for testing whether or not $\beta{}_5 = 0$? whether or not $\beta{}_2 = \beta{}_4 = 0$?
 \end{enumerate}
@@ -335,7 +372,7 @@ Clearly $SSR(X_1|X_2)$ and $SSR(X_1)$ are both the same.
 \end{enumerate}
 \item{} The relevant sum of squares for whether or not $\beta{}_5 = 0$:
 $$ SSR(X_5|X_1,X_2,X_3,X_4,X_5) $$
-The relevant sum of squares for whether or not $\beta{}_2 = \beta{}_4 = O$:
+The relevant sum of squares for whether or not $\beta{}_2 = \beta{}_4 = 0$:
 $$ SSR(X_2,X_4|X_1,X_3,X_5) $$
 \end{enumerate}
 
@@ -529,7 +566,7 @@ qplot(x=residuals(gpafit),
       ylab="Entrance Test Score times Indicator Variable for Major Declaration")
 @
 
-There appears to be a positive relationship between the residuals and $X_1X_2$ when $X_2 = 0$. It may be beneficial to include the term.
+There appears to be a positive relationship between the residuals and $X_1X_2$ when $X_2 = 1$. It may be beneficial to include the term.
 
 \end{enumerate}
 
@@ -604,7 +641,9 @@ Refer to Market share data set in Appendix C.3. Company executives want to be ab
 
 <<readdata>>=
 MarketShare <- read.table('MarketShare.txt',stringsAsFactors=F)
-names(MarketShare) <- c("id","Market.Share","Merchandise.Price","Nielson.Rating","Wholesale.Price.Discount","Package.Promotion","Month","Year")
+names(MarketShare) <- c("id","Market.Share","Merchandise.Price",
+                        "Nielson.Rating","Wholesale.Price.Discount",
+                        "Package.Promotion","Month","Year")
 MarketShare$i1999 <- 1*(MarketShare$Year == 1999)
 MarketShare$i2001 <- 1*(MarketShare$Year == 2001) 
 MarketShare$i2002 <- 1*(MarketShare$Year == 2002)
@@ -613,13 +652,18 @@ MarketShare$i2002 <- 1*(MarketShare$Year == 2002)
 Now fit the first order regression model and plot the residuals:
 
 <<fstorderregmod, fig=TRUE>>=
-msfit <- lm(Market.Share~Merchandise.Price+Nielson.Rating+Wholesale.Price.Discount+Package.Promotion+i1999+i2001+i2002,
+msfit <- lm(Market.Share~Merchandise.Price+Nielson.Rating+
+              Wholesale.Price.Discount+Package.Promotion+
+              i1999+i2001+i2002,
             data = MarketShare)
 msfit_sum <- summary(msfit)
 msfit_sum
 
 # plot the residuals
-qplot(x=msfit$fitted.values,y=msfit$residuals,xlab="Fitted Values",ylab="Residuals",main="Residuals vs. Fitted Values")
+qplot(x=msfit$fitted.values,y=msfit$residuals,
+      xlab="Fitted Values",
+      ylab="Residuals",
+      main="Residuals vs. Fitted Values")
 @
 
 The first order model appears to fit reasonably well. The residuals appear to have no relationship with the fitted values. The size of the residuals may get larger with increasing size of the fitted values, but it is not clear that this is the case.
@@ -627,8 +671,10 @@ The first order model appears to fit reasonably well. The residuals appear to ha
 \item{} Now let's refit with quadratic and interaction terms for the quantitative predictors.
 
 <<refitititititi>>=
-msfitint <- lm(Market.Share~Merchandise.Price+Nielson.Rating+I(Merchandise.Price^2)+I(Nielson.Rating^2)+
-                 Merchandise.Price*Nielson.Rating+Wholesale.Price.Discount+Package.Promotion+
+msfitint <- lm(Market.Share~Merchandise.Price+Nielson.Rating+
+                 I(Merchandise.Price^2)+I(Nielson.Rating^2)+
+                 Merchandise.Price*Nielson.Rating+Wholesale.Price.Discount+
+                 Package.Promotion+
                  i1999+i2001+i2002,
             data = MarketShare)
 msfitint_sum <- summary(msfitint)
@@ -638,7 +684,7 @@ msfitint_sum
 Now let's test to see if these added terms should be removed. The alternatives are as follows:
 
 $$ H_0: \beta{}_4 = \beta{}_5 = \beta{}_6 = 0 $$
-$$ H_a: \beta{}_4 \neq{} 0 or \beta{}_5 \neq{} 0 or \beta{}_6 \neq{} 0 $$
+$$ H_a: \beta{}_4 \neq{} 0 \text{ or } \beta{}_5 \neq{} 0 \text{ or } \beta{}_6 \neq{} 0 $$
 
 The decision rule is reject $H_0$ if:
 
@@ -662,7 +708,7 @@ Clearly, we fail to reject $H_0$ and conclude that we should drop quadratic and 
 \item{} Now let's test to see if we can remove year indicators and the Nielson rating: The alternatives are as follows:
 
 $$ H_0: \beta{}_3 = \beta{}_6 = \beta{}_7 = \beta{}_8 = 0 $$
-$$ H_a: \beta{}_3 \neq{} 0 or \beta{}_6 \neq{} 0 or \beta{}_7 \neq{} 0 or \beta{}_8 \neq{} 0$$
+$$ H_a: \beta{}_3 \neq{} 0 \text{ or } \beta{}_6 \neq{} 0 \text{ or } \beta{}_7 \neq{} 0 \text{ or } \beta{}_8 \neq{} 0$$
 
 The decision rule is reject $H_0$ if:
 

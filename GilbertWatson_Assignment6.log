@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2013.9.10)  31 OCT 2013 14:13
+This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2013.9.10)  31 OCT 2013 17:24
 entering extended mode
  %&-line parsing enabled.
 **GilbertWatson_Assignment6.tex
@@ -420,61 +420,60 @@ File: Fig-resids.pdf Graphic file (type pdf)
 Overfull \vbox (21.68121pt too high) has occurred while \output is active []
 
 
-[4 <./Fig-resids.pdf>] <Fig-moreplots.pdf, id=168, 433.62pt x 433.62pt>
+[4] <Fig-moreplots.pdf, id=162, 433.62pt x 433.62pt>
 File: Fig-moreplots.pdf Graphic file (type pdf)
+ <use Fig-moreplots.pdf>
+Overfull \vbox (21.68121pt too high) has occurred while \output is active []
 
-<use Fig-moreplots.pdf> <Fig-moreplots2.pdf, id=169, 433.62pt x 433.62pt>
+
+[5 <./Fig-resids.pdf>] <Fig-moreplots2.pdf, id=173, 433.62pt x 433.62pt>
 File: Fig-moreplots2.pdf Graphic file (type pdf)
 
 <use Fig-moreplots2.pdf>
 Overfull \vbox (21.68121pt too high) has occurred while \output is active []
 
 
-[5 <./Fig-moreplots.pdf>] <Fig-moreplots3.pdf, id=179, 433.62pt x 433.62pt>
+[6 <./Fig-moreplots.pdf>] <Fig-moreplots3.pdf, id=183, 433.62pt x 433.62pt>
 File: Fig-moreplots3.pdf Graphic file (type pdf)
 
 <use Fig-moreplots3.pdf>
 Overfull \vbox (21.68121pt too high) has occurred while \output is active []
 
 
-[6 <./Fig-moreplots2.pdf>] <Fig-moreplots4.pdf, id=189, 433.62pt x 433.62pt>
+[7 <./Fig-moreplots2.pdf>] <Fig-moreplots4.pdf, id=194, 433.62pt x 433.62pt>
 File: Fig-moreplots4.pdf Graphic file (type pdf)
 
 <use Fig-moreplots4.pdf>
 Overfull \vbox (21.68121pt too high) has occurred while \output is active []
 
 
-[7 <./Fig-moreplots3.pdf>] <Fig-moreplots5.pdf, id=200, 433.62pt x 433.62pt>
+[8 <./Fig-moreplots3.pdf>] <Fig-moreplots5.pdf, id=204, 433.62pt x 433.62pt>
 File: Fig-moreplots5.pdf Graphic file (type pdf)
 
 <use Fig-moreplots5.pdf>
 Overfull \vbox (21.68121pt too high) has occurred while \output is active []
 
 
-[8 <./Fig-moreplots4.pdf>]
-Overfull \vbox (21.68121pt too high) has occurred while \output is active []
-
-
-[9 <./Fig-moreplots5.pdf>]
-Overfull \vbox (21.68121pt too high) has occurred while \output is active []
-
-
-[10]
-LaTeX Font Info:    Try loading font information for TS1+aett on input line 327
+[9 <./Fig-moreplots4.pdf>]
+LaTeX Font Info:    Try loading font information for TS1+aett on input line 213
 .
  (/usr/share/R/share/texmf/tex/latex/ts1aett.fd
 File: ts1aett.fd 
 )
-LaTeX Font Info:    Try loading font information for TS1+cmtt on input line 327
+LaTeX Font Info:    Try loading font information for TS1+cmtt on input line 213
 .
 
 (/usr/share/texmf-texlive/tex/latex/base/ts1cmtt.fd
 File: ts1cmtt.fd 1999/05/25 v2.5h Standard LaTeX font definitions
 )
 LaTeX Font Info:    Font shape `TS1/aett/m/sl' in size <10> not available
-(Font)              Font shape `TS1/cmtt/m/sl' tried instead on input line 327.
+(Font)              Font shape `TS1/cmtt/m/sl' tried instead on input line 213.
 
 
+Overfull \vbox (21.68121pt too high) has occurred while \output is active []
+
+
+[10 <./Fig-moreplots5.pdf>]
 Overfull \vbox (21.68121pt too high) has occurred while \output is active []
 
 
@@ -506,15 +505,23 @@ Overfull \vbox (21.68121pt too high) has occurred while \output is active []
 Overfull \vbox (21.68121pt too high) has occurred while \output is active []
 
 
-[18] <Fig-moreresplots.pdf, id=306, 433.62pt x 433.62pt>
+[18]
+Overfull \vbox (21.68121pt too high) has occurred while \output is active []
+
+
+[19] <Fig-moreresplots.pdf, id=310, 433.62pt x 433.62pt>
 File: Fig-moreresplots.pdf Graphic file (type pdf)
 
 <use Fig-moreresplots.pdf>
 Overfull \vbox (21.68121pt too high) has occurred while \output is active []
 
 
-[19 <./Fig-moreresplots.pdf>]
-Overfull \hbox (20.67586pt too wide) detected at line 863
+[20]
+Overfull \vbox (21.68121pt too high) has occurred while \output is active []
+
+
+[21 <./Fig-moreresplots.pdf>]
+Overfull \hbox (20.67586pt too wide) detected at line 901
 \OML/cmm/m/it/10 Y[] \OT1/cmr/m/n/10 = 3\OML/cmm/m/it/10 :\OT1/cmr/m/n/10 22631
 84991274 + \OMS/cmsy/m/n/10 ^^@\OT1/cmr/m/n/10 0\OML/cmm/m/it/10 :\OT1/cmr/m/n/
 10 00275741710296684\OML/cmm/m/it/10 X[] \OT1/cmr/m/n/10 + \OMS/cmsy/m/n/10 ^^@
@@ -527,19 +534,38 @@ L/cmm/m/it/10 X[]X[]
 Overfull \vbox (21.68121pt too high) has occurred while \output is active []
 
 
-[20]
+[22]
 Overfull \vbox (21.68121pt too high) has occurred while \output is active []
 
 
-[21] (./GilbertWatson_Assignment6.aux) ) 
+[23] <Fig-fstorderregmod.pdf, id=342, 433.62pt x 433.62pt>
+File: Fig-fstorderregmod.pdf Graphic file (type pdf)
+
+<use Fig-fstorderregmod.pdf>
+Overfull \vbox (21.68121pt too high) has occurred while \output is active []
+
+
+[24 <./Fig-fstorderregmod.pdf>]
+Overfull \vbox (21.68121pt too high) has occurred while \output is active []
+
+
+[25]
+Overfull \vbox (21.68121pt too high) has occurred while \output is active []
+
+
+[26]
+Overfull \vbox (21.68121pt too high) has occurred while \output is active []
+
+
+[27] (./GilbertWatson_Assignment6.aux) ) 
 Here is how much of TeX's memory you used:
- 6100 strings out of 495061
- 86664 string characters out of 1182621
+ 6117 strings out of 495061
+ 86881 string characters out of 1182621
  154852 words of memory out of 3000000
- 9023 multiletter control sequences out of 15000+50000
- 28145 words of font info for 66 fonts, out of 3000000 for 9000
+ 9029 multiletter control sequences out of 15000+50000
+ 31137 words of font info for 68 fonts, out of 3000000 for 9000
  28 hyphenation exceptions out of 8191
- 38i,6n,36p,634b,557s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 38i,7n,36p,634b,553s stack positions out of 5000i,500n,10000p,200000b,50000s
  </home/gwatson/.texmf-var/fonts/pk/ljf
 our/jknappen/ec/tcst1000.600pk></usr/share/texmf-texlive/fonts/type1/public/ams
 fonts/cm/cmbx10.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cm
@@ -552,9 +578,9 @@ nts/cm/cmr7.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmsltt
 10.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmsy10.pfb></us
 r/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/share/texm
 f-texlive/fonts/type1/public/amsfonts/cm/cmtt10.pfb>
-Output written on GilbertWatson_Assignment6.pdf (21 pages, 270711 bytes).
+Output written on GilbertWatson_Assignment6.pdf (27 pages, 291771 bytes).
 PDF statistics:
- 403 PDF objects out of 1000 (max. 8388607)
- 111 named destinations out of 1000 (max. 500000)
- 229 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 437 PDF objects out of 1000 (max. 8388607)
+ 119 named destinations out of 1000 (max. 500000)
+ 234 words of extra memory for PDF output out of 10000 (max. 10000000)
 

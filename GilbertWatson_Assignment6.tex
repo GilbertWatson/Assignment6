@@ -77,7 +77,7 @@ Then let's generate the scatter plot matrix:
 > require(reshape2)
 > melted <- melt(BrandPreference,id.vars=c("Brand.Liking"))
 > g <- ggplot(data=melted,aes(Brand.Liking,value))
-> g + geom_point() + facet_wrap(~variable)
+> g + geom_point() + facet_wrap(~variable,scales="free_y") + xlab("Brand Liking") + ylab("Value")
 \end{Sinput}
 \end{Schunk}
 \includegraphics{Fig-scatterplot}
@@ -95,6 +95,8 @@ Moisture.Content    0.8923929        1.0000000 0.0000000
 Sweetness           0.3945807        0.0000000 1.0000000
 \end{Soutput}
 \end{Schunk}
+
+These aids show that while both moisture content and sweetness are correlated with brand liking, that moisture content and sweetness are not correlated with each other.
 
 \item{} Now let's estimate the model $Y_i = b_0 + b_1X_{i1} + b_2X_{i2} + \epsilon{}_i$:
 \begin{Schunk}
@@ -127,6 +129,8 @@ F-statistic: 129.1 on 2 and 13 DF,  p-value: 2.658e-09
 
 So, the estimated model is:
 $$ Y_i = 37.65 + 4.425X_{i1} + 4.375X_{i2} $$
+
+An interpretation for $b_1$ is that for every one unit increase in moisture content, brand liking increases by $4.425$ units.
 
 \item{} Now let's examine the residuals:
 
@@ -189,25 +193,36 @@ This plot shows that the residuals are roughly normally distributed around 0.
 \end{Schunk}
 \includegraphics{Fig-moreplots5}
 
-The plots indicate the the residuals are not only distributed normally, but are uncorrelated with either any of the predictors or the outcome. The model assumptions hold.
+The plots indicate the the residuals are not only distributed normally, but are uncorrelated with any of the predictors or the outcome variable. The model assumptions hold.
 
-\item{} Let's perform the Breush-Pagan test for heteroskedasticity of the error terms
+\item{} Let's perform the Breush-Pagan test for heteroskedasticity of the error terms. The alternatives are as follows:
+
+$$ H_0: \gamma{}_1 = \gamma{}_2 =  0 $$
+$$ H_a: \gamma{}_1 \neq{} 0 \text{ or } \gamma{}_2 \neq{} 0 $$
+
+The decision rule is reject $H_0$ if:
+
+$$ \chi{}_{BP}^2 > \chi{}_{BP}^2(0.99,2) $$
+
+Let's compute the test statistic and critical value:
 
 \begin{Schunk}
 \begin{Sinput}
-> require(lmtest)
-> pb <- bptest(fit,studentize=F)
-> pb
+> # compute test statistic
+> efit <- lm(I(fit$residuals^2)~fit$model$Moisture.Content+fit$model$Sweetness)
+> SSR_star <- sum(anova(efit)$`Sum Sq`) - deviance(efit)
+> SSEfit <- deviance(fit)
+> chisq_bp <- (SSR_star/2)/(SSEfit/length(fit$model$Brand.Liking))^2
+> # compute the critical value
+> cv <- qchisq(0.99,2)
+> print(paste0("ChiSqr^2_{BP} is ",chisq_bp," and the critical value is ",cv,"."))
 \end{Sinput}
 \begin{Soutput}
-	Breusch-Pagan test
-
-data:  fit
-BP = 1.0422, df = 2, p-value = 0.5939
+[1] "ChiSqr^2_{BP} is 1.04223856310212 and the critical value is 9.21034037197618."
 \end{Soutput}
 \end{Schunk}
 
-Clearly, we cannot reject the null hypothesis that the model exhibits homoskedasticity.
+Clearly, we cannot reject the null hypothesis - the model has constant error variance.
 
 \end{enumerate}
 
@@ -268,6 +283,17 @@ Now we can find $SSR(X_2|X_1)$:
 
 So, the extra sum of squares, $SSR(X_2|X_1) = 306.25$.
 
+The extra sum of squares table would look like the following:
+
+\begin{tabular}{l l l l}
+Source of Variation & SS & df & MS \\ \hline
+Regression & $1872.7$ & 2 & $1872.7$ \\
+Moisture Content & $1566.45$ & 1 & $1566.45$ \\
+Moisture Content|Sweetness & $306.25$ & 1 & $306.25$ \\
+Error & $94.3$ & 13 & $7.25384615384616$ \\
+Total & $1967$ & 12 \\
+\end{tabular}
+
 \item{} Now let's test to see if we can drop $X_2$ given $X_1$. The alternatives are as follows:
 
 $$ H_0: \beta{}_3 = 0 $$
@@ -313,7 +339,7 @@ Clearly we reject $H_0$ and conclude that $X_2$ should remain in the model. Let'
 \section{7.12}
 %--------------------------------------------
 
-Refer to Brand Preference Problem 6.5: Calculate $R_{Y1}^2$, $R_{Y2}^2$, $R_{|2}^2$, $R_{Y1|2}^2$, $R_{Y2|1}^2$, and $R^2$. Explain what each coefficient measures and interpret your results.
+Refer to Brand Preference Problem 6.5: Calculate $R_{Y1}^2$, $R_{Y2}^2$, $R_{12}^2$, $R_{Y1|2}^2$, $R_{Y2|1}^2$, and $R^2$. Explain what each coefficient measures and interpret your results.
 
 \subsection{Answer:}
 
@@ -344,7 +370,18 @@ Refer to Brand Preference Problem 6.5: Calculate $R_{Y1}^2$, $R_{Y2}^2$, $R_{|2}
 \end{Soutput}
 \end{Schunk}
 
-\item{} $R_{|2}^2$:
+\item{} $R_{12}^2$:
+
+\begin{Schunk}
+\begin{Sinput}
+> r2_12 <- (anovafit["Sweetness","Sum Sq"]+anovafit["Moisture.Content","Sum Sq"])/
++   sum(anovafit$`Sum Sq`)
+> r2_12
+\end{Sinput}
+\begin{Soutput}
+[1] 0.952059
+\end{Soutput}
+\end{Schunk}
 
 \item{} $R_{Y1|2}^2$:
 
@@ -511,7 +548,7 @@ Clearly $SSR(X_1|X_2)$ and $SSR(X_1)$ are both the same.
 \section{7.28}
 %--------------------------------------------
 
-\begin{enumerate}[a]
+\begin{enumerate}[a)]
 \item{} Define each of the following exta sums of squares: (I) $SSR(X_5|X_1)$, (2) $SSR(X_3,X_4|X_1)$, (3) $SSR(X_4|X_1,X_2,X_3)$.
 \item{} For a multiple regression model with five $X$ variables, what is the relevant exta sum of squares for testing whether or not $\beta{}_5 = 0$? whether or not $\beta{}_2 = \beta{}_4 = 0$?
 \end{enumerate}
@@ -527,7 +564,7 @@ Clearly $SSR(X_1|X_2)$ and $SSR(X_1)$ are both the same.
 \end{enumerate}
 \item{} The relevant sum of squares for whether or not $\beta{}_5 = 0$:
 $$ SSR(X_5|X_1,X_2,X_3,X_4,X_5) $$
-The relevant sum of squares for whether or not $\beta{}_2 = \beta{}_4 = O$:
+The relevant sum of squares for whether or not $\beta{}_2 = \beta{}_4 = 0$:
 $$ SSR(X_2,X_4|X_1,X_3,X_5) $$
 \end{enumerate}
 
@@ -794,21 +831,22 @@ Let's compute the test statistic and critical value:
 \end{Soutput}
 \end{Schunk}
 
-Clearly we fail to reject $H_0$ and conclude that $X_2$ should not remain in the model. Let's compute the p-value of the test statistic:
+Clearly we fail to reject $H_0$ and conclude that $X_2$ should not remain in the model.
 
 \item{} Let's plot the residuals vs the variable $X_1X_2$:
 
 \begin{Schunk}
 \begin{Sinput}
 > qplot(x=residuals(gpafit),
-+       y=Entrance.Test*Major.Indicated,data=GPA,
++       y=Entrance.Test*Major.Indicated,
++       data=GPA,
 +       xlab="Residuals",
 +       ylab="Entrance Test Score times Indicator Variable for Major Declaration")
 \end{Sinput}
 \end{Schunk}
 \includegraphics{Fig-moreresplots}
 
-There appears to be a positive relationship between the residuals and $X_1X_2$ when $X_2 = 0$. It may be beneficial to include the term.
+There appears to be a positive relationship between the residuals and $X_1X_2$ when $X_2 = 1$. It may be beneficial to include the term.
 
 \end{enumerate}
 
@@ -862,10 +900,34 @@ F-statistic: 5.244 on 3 and 116 DF,  p-value: 0.001982
 The estimated model is:
 $$ Y_i = 3.2263184991274 + -0.00275741710296684X_{i1} + -1.64957722409641X_{i2} + 0.0622446509862124X_{i1}X_{i2} $$
 
-\item{} Test whether the interaction term is beneficial to the model:
+\item{} Let's test whether the interaction term is beneficial to the model. The alternatives are as follows:
 
+$$ H_0: \beta{}_4 = 0 $$
+$$ H_a: \beta{}_4 \neq{} 0 $$
 
+The decision rule is reject $H_0$ if:
 
+$$ F^* > F(0.95,1,117) $$
+
+Let's compute the test statistic and critical value:
+
+\begin{Schunk}
+\begin{Sinput}
+> # test statistic
+> F_star <- ((deviance(gpafit) - deviance(intfit)) /
++   ((length(GPA$GPA) - gpafit_sum$df[1]) - 
++      (length(GPA$GPA) - intfit_sum$df[1]))) /
++   (deviance(intfit)/(length(GPA$GPA) - intfit_sum$df[1]))
+> # critical value
+> cv <- qf(0.95,1,length(GPA$GPA)-intfit_sum$df[1])
+> print(paste0("F^star is ",F_star," and the critical value is ",cv,"."))
+\end{Sinput}
+\begin{Soutput}
+[1] "F^star is 5.52263534905967 and the critical value is 3.92287936161707."
+\end{Soutput}
+\end{Schunk}
+
+Clearly we reject $H_0$ and conclude that $X_1X_2$ should remain in the model. The nature of the interaction effect is that if an incoming student declared a major at time of admittance, then the marginal effect of a one point increase in entrance test score on first year GPA is $0.0622446509862124$ higher than the baseline marginal effect when a student doesn't initially indicate a major.
 
 \end{enumerate}
 
@@ -873,7 +935,7 @@ $$ Y_i = 3.2263184991274 + -0.00275741710296684X_{i1} + -1.64957722409641X_{i2} 
 \section{8.42}
 %--------------------------------------------
 
-Refer to Market share data set in Appendix C.3. Company executives want to be able to predict market share of their product ($Y$) based on merchandise price ($X_1$), the gross Nielsen rating points ($X_1$, an index of the amount of advertising exposure that the product received); the presence or absence of a wholesale pricing discount ($X_3 = 1$ if discount present: otherwise $X_3 = 0$); the presence or absence of a package promotion during the period ($X_4 = 1$ if promotion present: otherwise $X_4 = 0$): and year ($X_5$). Code year as a nominal level variable and use 2000 as the reference year.
+Refer to Market share data set in Appendix C.3. Company executives want to be able to predict market share of their product ($Y$) based on merchandise price ($X_1$), the gross Nielsen rating points ($X_2$, an index of the amount of advertising exposure that the product received); the presence or absence of a wholesale pricing discount ($X_3 = 1$ if discount present: otherwise $X_3 = 0$); the presence or absence of a package promotion during the period ($X_4 = 1$ if promotion present: otherwise $X_4 = 0$): and year ($X_5$). Code year as a nominal level variable and use 2000 as the reference year.
 
 \begin{enumerate}[a)]
 \item{} Fit a first-order regression model. Plot the residuals against the fitted values. How well does the first-order model appear to fit the data?
@@ -889,11 +951,199 @@ Refer to Market share data set in Appendix C.3. Company executives want to be ab
 \begin{Schunk}
 \begin{Sinput}
 > MarketShare <- read.table('MarketShare.txt',stringsAsFactors=F)
-> names(MarketShare) <- c("id","Market.Share","Merchandise.Price","Nielson.Rating","Wholesale.Price.Discount","Package.Promotion","Month","Year")
+> names(MarketShare) <- c("id","Market.Share","Merchandise.Price",
++                         "Nielson.Rating","Wholesale.Price.Discount",
++                         "Package.Promotion","Month","Year")
 > MarketShare$i1999 <- 1*(MarketShare$Year == 1999)
 > MarketShare$i2001 <- 1*(MarketShare$Year == 2001) 
 > MarketShare$i2002 <- 1*(MarketShare$Year == 2002)
 \end{Sinput}
+\end{Schunk}
+
+Now fit the first order regression model and plot the residuals:
+
+\begin{Schunk}
+\begin{Sinput}
+> msfit <- lm(Market.Share~Merchandise.Price+Nielson.Rating+
++               Wholesale.Price.Discount+Package.Promotion+
++               i1999+i2001+i2002,
++             data = MarketShare)
+> msfit_sum <- summary(msfit)
+> msfit_sum
+\end{Sinput}
+\begin{Soutput}
+Call:
+lm(formula = Market.Share ~ Merchandise.Price + Nielson.Rating + 
+    Wholesale.Price.Discount + Package.Promotion + i1999 + i2001 + 
+    i2002, data = MarketShare)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-0.33558 -0.11872  0.02459  0.08020  0.21952 
+
+Coefficients:
+                           Estimate Std. Error t value Pr(>|t|)    
+(Intercept)               3.021e+00  4.705e-01   6.421 5.94e-07 ***
+Merchandise.Price        -2.470e-01  1.982e-01  -1.246   0.2229    
+Nielson.Rating           -9.653e-05  1.914e-04  -0.504   0.6181    
+Wholesale.Price.Discount  4.093e-01  5.385e-02   7.601 2.80e-08 ***
+Package.Promotion         1.240e-01  5.484e-02   2.261   0.0317 *  
+i1999                     1.324e-02  9.304e-02   0.142   0.8879    
+i2001                    -1.088e-01  7.133e-02  -1.525   0.1385    
+i2002                    -8.306e-02  8.657e-02  -0.959   0.3456    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 0.1529 on 28 degrees of freedom
+Multiple R-squared:  0.7326,	Adjusted R-squared:  0.6657 
+F-statistic: 10.96 on 7 and 28 DF,  p-value: 1.382e-06
+\end{Soutput}
+\begin{Sinput}
+> # plot the residuals
+> qplot(x=msfit$fitted.values,y=msfit$residuals,
++       xlab="Fitted Values",
++       ylab="Residuals",
++       main="Residuals vs. Fitted Values")
+\end{Sinput}
+\end{Schunk}
+\includegraphics{Fig-fstorderregmod}
+
+The first order model appears to fit reasonably well. The residuals appear to have no relationship with the fitted values. The size of the residuals may get larger with increasing size of the fitted values, but it is not clear that this is the case.
+
+\item{} Now let's refit with quadratic and interaction terms for the quantitative predictors.
+
+\begin{Schunk}
+\begin{Sinput}
+> msfitint <- lm(Market.Share~Merchandise.Price+Nielson.Rating+
++                  I(Merchandise.Price^2)+I(Nielson.Rating^2)+
++                  Merchandise.Price*Nielson.Rating+Wholesale.Price.Discount+
++                  Package.Promotion+
++                  i1999+i2001+i2002,
++             data = MarketShare)
+> msfitint_sum <- summary(msfitint)
+> msfitint_sum
+\end{Sinput}
+\begin{Soutput}
+Call:
+lm(formula = Market.Share ~ Merchandise.Price + Nielson.Rating + 
+    I(Merchandise.Price^2) + I(Nielson.Rating^2) + Merchandise.Price * 
+    Nielson.Rating + Wholesale.Price.Discount + Package.Promotion + 
+    i1999 + i2001 + i2002, data = MarketShare)
+
+Residuals:
+     Min       1Q   Median       3Q      Max 
+-0.33455 -0.08692  0.01892  0.07039  0.23931 
+
+Coefficients:
+                                   Estimate Std. Error t value Pr(>|t|)    
+(Intercept)                       8.698e+00  6.818e+00   1.276   0.2138    
+Merchandise.Price                -4.803e+00  5.380e+00  -0.893   0.3805    
+Nielson.Rating                   -9.508e-04  3.492e-03  -0.272   0.7877    
+I(Merchandise.Price^2)            9.221e-01  1.069e+00   0.863   0.3965    
+I(Nielson.Rating^2)               5.518e-07  7.375e-07   0.748   0.4613    
+Wholesale.Price.Discount          3.941e-01  6.098e-02   6.463 9.09e-07 ***
+Package.Promotion                 1.149e-01  5.772e-02   1.991   0.0575 .  
+i1999                             1.236e-02  1.006e-01   0.123   0.9031    
+i2001                            -1.006e-01  7.476e-02  -1.345   0.1906    
+i2002                            -5.807e-02  9.541e-02  -0.609   0.5483    
+Merchandise.Price:Nielson.Rating  1.629e-04  1.393e-03   0.117   0.9078    
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 0.1583 on 25 degrees of freedom
+Multiple R-squared:  0.744,	Adjusted R-squared:  0.6417 
+F-statistic: 7.267 on 10 and 25 DF,  p-value: 2.837e-05
+\end{Soutput}
+\end{Schunk}
+
+Now let's test to see if these added terms should be removed. The alternatives are as follows:
+
+$$ H_0: \beta{}_4 = \beta{}_5 = \beta{}_6 = 0 $$
+$$ H_a: \beta{}_4 \neq{} 0 \text{ or } \beta{}_5 \neq{} 0 \text{ or } \beta{}_6 \neq{} 0 $$
+
+The decision rule is reject $H_0$ if:
+
+$$ F^* > F(0.95,1,25) $$
+
+Let's compute the test statistic and critical value:
+
+\begin{Schunk}
+\begin{Sinput}
+> # test statistic
+> F_star <- ((deviance(msfit) - deviance(msfitint)) /
++   ((length(MarketShare$id) - msfit_sum$df[1]) - 
++      (length(MarketShare$id) - msfitint_sum$df[1]))) /
++   (deviance(msfitint)/(length(MarketShare$id) - msfitint_sum$df[1]))
+> # critical value
+> cv <- qf(0.95,1,length(MarketShare$id)-msfitint_sum$df[1])
+> print(paste0("F^star is ",F_star," and the critical value is ",cv,"."))
+\end{Sinput}
+\begin{Soutput}
+[1] "F^star is 0.374002331978545 and the critical value is 4.24169905027715."
+\end{Soutput}
+\end{Schunk}
+
+Clearly, we fail to reject $H_0$ and conclude that we should drop quadratic and interaction terms from the model.
+
+\item{} Now let's test to see if we can remove year indicators and the Nielson rating: The alternatives are as follows:
+
+$$ H_0: \beta{}_3 = \beta{}_6 = \beta{}_7 = \beta{}_8 = 0 $$
+$$ H_a: \beta{}_3 \neq{} 0 \text{ or } \beta{}_6 \neq{} 0 \text{ or } \beta{}_7 \neq{} 0 \text{ or } \beta{}_8 \neq{} 0$$
+
+The decision rule is reject $H_0$ if:
+
+$$ F^* > F(0.95,1,28) $$
+
+Let's compute the test statistic and critical value. We must also fit a reduced model:
+
+\begin{Schunk}
+\begin{Sinput}
+> # reduced model:
+> msfitrd <- lm(Market.Share~Merchandise.Price+Wholesale.Price.Discount+Package.Promotion,
++             data = MarketShare)
+> msfitrd_sum <- summary(msfitrd)
+> # test statistic
+> F_star <- ((deviance(msfitrd) - deviance(msfit)) /
++   ((length(MarketShare$id) - msfitrd_sum$df[1]) - 
++      (length(MarketShare$id) - msfit_sum$df[1]))) /
++   (deviance(msfit)/(length(MarketShare$id) - msfit_sum$df[1]))
+> # critical value
+> cv <- qf(0.95,1,length(MarketShare$id)-msfit_sum$df[1])
+> print(paste0("F^star is ",F_star," and the critical value is ",cv,"."))
+\end{Sinput}
+\begin{Soutput}
+[1] "F^star is 0.681718770588163 and the critical value is 4.19597181855776."
+\end{Soutput}
+\end{Schunk}
+
+Clearly, we fail to reject $H_0$ and conclude that we should drop year indicators and the Nielson rating. This model estimation follows:
+
+\begin{Schunk}
+\begin{Sinput}
+> msfitrd_sum
+\end{Sinput}
+\begin{Soutput}
+Call:
+lm(formula = Market.Share ~ Merchandise.Price + Wholesale.Price.Discount + 
+    Package.Promotion, data = MarketShare)
+
+Residuals:
+      Min        1Q    Median        3Q       Max 
+-0.286376 -0.100465 -0.002259  0.104174  0.240020 
+
+Coefficients:
+                         Estimate Std. Error t value Pr(>|t|)    
+(Intercept)               3.18527    0.36505   8.726  5.7e-10 ***
+Merchandise.Price        -0.35269    0.15738  -2.241   0.0321 *  
+Wholesale.Price.Discount  0.39914    0.05125   7.787  7.0e-09 ***
+Package.Promotion         0.11803    0.05149   2.292   0.0286 *  
+---
+Signif. codes:  0 ‘***’ 0.001 ‘**’ 0.01 ‘*’ 0.05 ‘.’ 0.1 ‘ ’ 1
+
+Residual standard error: 0.1498 on 32 degrees of freedom
+Multiple R-squared:  0.7065,	Adjusted R-squared:  0.679 
+F-statistic: 25.68 on 3 and 32 DF,  p-value: 1.191e-08
+\end{Soutput}
 \end{Schunk}
 
 \end{enumerate}
@@ -921,13 +1171,13 @@ attached base packages:
 [1] stats     graphics  grDevices utils     datasets  methods   base     
 
 other attached packages:
-[1] lmtest_0.9-32   zoo_1.7-10      reshape2_1.2.2  ggplot2_0.9.3.1
+[1] reshape2_1.2.2  ggplot2_0.9.3.1
 
 loaded via a namespace (and not attached):
  [1] MASS_7.3-29        RColorBrewer_1.0-5 colorspace_1.2-4   dichromat_2.0-0   
  [5] digest_0.6.3       grid_3.0.2         gtable_0.1.2       labeling_0.2      
- [9] lattice_0.20-23    munsell_0.4.2      plyr_1.8           proto_0.3-10      
-[13] scales_0.2.3       stringr_0.6.2      tools_3.0.2       
+ [9] munsell_0.4.2      plyr_1.8           proto_0.3-10       scales_0.2.3      
+[13] stringr_0.6.2      tools_3.0.2       
 \end{Soutput}
 \end{Schunk}
 
