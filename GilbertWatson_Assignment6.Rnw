@@ -102,12 +102,37 @@ This plot shows that the residuals are roughly normally distributed around 0.
 
 \item{} Let's plot the residuals against $Y$, $X_1$, $X_2$ , and $X_1$ $X_2$:
  
-<<moreplots>>=
-qplot(x=fit$residuals,y=fit$model$Brand.Liking,xlab="Residuals",ylab="Brand Liking")
-qplot(x=fit$residuals,y=fit$model$Moisture.Content,xlab="Residuals",ylab="Moisture Content")
-qplot(x=fit$residuals,y=fit$model$Sweetness,xlab="Residuals",ylab="Sweetness")
-qplot(x=fit$residuals,y=fit$model$Moisture.Content*fit$model$Sweetness,xlab="Residuals",ylab="Moisture Content times Sweetness")
-qplot(sample=fit$residuals,stat="qq",main="Normal Probability Plot for Model Residuals")
+<<moreplots, fig=TRUE>>=
+qplot(x=fit$residuals,
+      y=fit$model$Brand.Liking,
+      xlab="Residuals",
+      ylab="Brand Liking")
+@
+
+<<moreplots2, fig=TRUE>>=
+qplot(x=fit$residuals,
+      y=fit$model$Moisture.Content,
+      xlab="Residuals",
+      ylab="Moisture Content")
+@
+
+<<moreplots3, fig=TRUE>>=
+qplot(x=fit$residuals,
+      y=fit$model$Sweetness,
+      xlab="Residuals",
+      ylab="Sweetness")
+@
+
+<<moreplots4, fig=TRUE>>=
+qplot(x=fit$residuals,
+      y=fit$model$Moisture.Content*fit$model$Sweetness,
+      xlab="Residuals",ylab="Moisture Content times Sweetness")
+@
+
+<<moreplots5, fig=TRUE>>=
+qplot(sample=fit$residuals,
+      stat="qq",
+      main="Normal Probability Plot for Model Residuals")
 @
 
 The plots indicate the the residuals are not only distributed normally, but are uncorrelated with either any of the predictors or the outcome. The model assumptions hold.
@@ -138,9 +163,49 @@ Refer to Brand Preference Problem 6.5:
 \subsection{Answer:}
 
 \begin{enumerate}[a)]
-\item{} Let's make the partial sum of squares table
-<<ppsumsq>>=
+\item{} First we must fit the first order model:
 
+<<ppsumsq>>=
+fo <- lm(Brand.Liking~Moisture.Content,data=BrandPreference)
+fosum <- summary(fo)
+fosum
+@
+
+Now we can find $SSR(X_2|X_1)$:
+
+<<ssrx2x1>>=
+ssr_x2x1 <- deviance(fo) - deviance(fit)
+ssr_x2x1
+@
+
+So, the extra sum of squares, $SSR(X_2|X_1) = \Sexpr{ssr_x2x1}$.
+
+\item{} Now let's test to see if we can drop $X_2$ given $X_1$. The alternatives are as follows:
+
+$$ H_0: \beta{}_3 = 0 $$
+$$ H_a: \beta{}_3 \neq{} 0 $$
+
+The decision rule is reject $H_0$ if:
+
+$$ F^* > F(0.99,1,\Sexpr{length(BrandPreference$Brand.Liking) - fitsum$df[1]}) $$
+
+Let's compute the test statistic and critical value:
+
+<<testfstar>>=
+# test statistic
+F_star <- ((deviance(fo) - deviance(fit)) /
+  ((length(BrandPreference$Brand.Liking) - fosum$df[1]) - (length(BrandPreference$Brand.Liking) - fitsum$df[1]))) /
+  (deviance(fit)/(length(BrandPreference$Brand.Liking) - fitsum$df[1]))
+# critical value
+cv <- qf(0.99,1,length(BrandPreference$Brand.Liking)-fitsum$df[1])
+print(paste0("F^star is ",F_star," and the critical value is ",cv,"."))
+@
+
+Clearly we reject $H_0$ and conclude that $X_2$ should remain in the model. Let's compute the p-value of the test statistic:
+
+<<getp>>=
+pval <- 1 - pf(F_star,1,length(BrandPreference$Brand.Liking)-fitsum$df[1])
+print(paste0("The p-value for F^star is: ",pval))
 @
 
 \end{enumerate}
@@ -201,7 +266,7 @@ We find that the coefficients are the same in both models for Sweetness.
 
 \begin{enumerate}[a]
 \item{} Define each of the following exta sums of squares: (I) $SSR(X_5|X_1)$, (2) $SSR(X_3,X_4|X_1)$, (3) $SSR(X_4|X_1,X_2,X_3)$.
-\item{} For a multiple regression model with five $X$ variables, what is the relevant exta sum of squares for testing whether or not $\beta{}_5 = O$? whether or not $\beta{}_2 = \beta{}_4 = O$?
+\item{} For a multiple regression model with five $X$ variables, what is the relevant exta sum of squares for testing whether or not $\beta{}_5 = 0$? whether or not $\beta{}_2 = \beta{}_4 = 0$?
 \end{enumerate}
 
 \subsection{Answer:}
@@ -251,31 +316,39 @@ Refer to Brand Preference Problem 6.5:
 \begin{enumerate}[a)]
 \item{} Regress $Y$ on $X_1$ using simple linear regression model (2.1) and obtain the residuals.
 \item{} Regress $X_1$ on $X_2$ using simple linear regression model (2.1) and obtain the residuals.
-\item{} Calculate the coefficient of simple correlation between the two sets of residuals and show that it equals $r_{Y1|2}$.
+\item{} Calculate the coefficient of simple correlation between the two sets of residuals and show that it equals $R_{Y1|2}$.
 \end{enumerate}
 
 \subsection{Answer:}
 
 \begin{enumerate}[a)]
-\item{} We have already previously estimated this mode, but we will obtain the residuals:
+\item{} We have already previously estimated this model, so we can obtain the residuals:
+
 <<morebrands>>=
 res_fo <- residuals(fo)
 print(res_fo)
 @
-\item{} Now let's regress $X_1$ on $X_2$:
+
+\item{} Now let's regress $X_1$ on $X_2$ and obtain the residuals:
+
 <<morebrands2>>=
 xonx <- lm(Moisture.Content~Sweetness,data=BrandPreference)
 res_xonx <- residuals(xonx)
 print(res_xonx)
 @
+
 \item{} The simple correlation coefficient between the residuals for the two models is:
+
 <<corresids>>=
 cor(x=res_fo,y=res_xonx)
 @
-Now let's show that is is roughly equal to $r_{Y1|2}$:
+
+Now let's show that is is roughly equal to $R_{Y1|2}$:
+
 <<roughlyequal>>=
 
 @
+
 \end{enumerate}
 
 %-------------------------------------------
@@ -293,11 +366,14 @@ Refer to Brand Preference Problem 6.5:
 
 \begin{enumerate}[a)]
 \item{} Let's fit the model:
+
 <<yetanotherbpodel>>=
-wint <- lm(Brand.Liking~Moisture.Content+Sweetness+Moisture.Content*Sweetness,data=BrandPreference)
+wint <- lm(Brand.Liking~Moisture.Content+Sweetness+Moisture.Content*Sweetness,
+           data=BrandPreference)
 wint_sum <- summary(wint)
 wint_sum
 @
+
 \item{} Now let's test and see if the interaction term can be removed from the model:
 
 
@@ -323,6 +399,7 @@ Refer to Grade point average Problem 1.19. An assistant to the director of admis
 \begin{enumerate}[a)]
 \item{} $\beta{}_1$ can be interpreted as the effect of a one unit increase in entrance test score - a one unit increase in entrance test score yeilds a $\beta{}_1$ unit increase in a student's first year GPA, on average. $\beta{}_2$ can be interpreted as the average difference in GPA points associated with students who stated thier major field at the time of application irrespective of entrance test score.
 \item{} Fit the model:
+
 <<schools>>=
 GPA <- read.table(file='8.16.txt',stringsAsFactors=F)
 names(GPA) <- c("GPA","Entrance.Test","Major.Indicated")
@@ -330,6 +407,7 @@ gpafit <- lm(GPA~Entrance.Test+Major.Indicated,data=GPA)
 gpafit_sum <- summary(gpafit)
 gpafit_sum
 @
+
 The estimated model is:
 $$ Y_i = \Sexpr{gpafit_sum$coefficients["(Intercept)","Estimate"]} + \Sexpr{gpafit_sum$coefficients["Entrance.Test","Estimate"]}X_{i1} + \Sexpr{gpafit_sum$coefficients["Entrance.Test","Estimate"]}X_{i2} $$
 \item{} Construct a test:
@@ -337,9 +415,14 @@ $$ Y_i = \Sexpr{gpafit_sum$coefficients["(Intercept)","Estimate"]} + \Sexpr{gpaf
 
 
 \item{} Let's plot the residuals vs the variable $X_1X_2$:
-<<moreresplots>>=
-qplot(x=residuals(gpafit),y=Entrance.Test*Major.Indicated,data=GPA,xlab="Residuals",ylab="Entrance Test Score times Indicator Variable for Major Declaration")
+
+<<moreresplots, fig=TRUE>>=
+qplot(x=residuals(gpafit),
+      y=Entrance.Test*Major.Indicated,data=GPA,
+      xlab="Residuals",
+      ylab="Entrance Test Score times Indicator Variable for Major Declaration")
 @
+
 There appears to be a positive relationship between the residuals and $X_1X_2$ when $X_2 = 0$. It may be beneficial to include the term.
 \end{enumerate}
 
@@ -358,13 +441,17 @@ Refer to Grade point average Problems 1.19 and 8.16:
 
 \begin{enumerate}[a)]
 \item{} Fit the model:
+
 <<interactionmodel>>=
-intfit <- lm(GPA~Entrance.Test+Major.Indicated+Entrance.Test*Major.Indicated,data=GPA)
+intfit <- lm(GPA~Entrance.Test+Major.Indicated+Entrance.Test*Major.Indicated,
+             data=GPA)
 intfit_sum <- summary(intfit)
 intfit_sum
 @
+
 The estimated model is:
 $$ Y_i = \Sexpr{intfit_sum$coefficients["(Intercept)","Estimate"]} + \Sexpr{intfit_sum$coefficients["Entrance.Test","Estimate"]}X_{i1} + \Sexpr{intfit_sum$coefficients["Major.Indicated","Estimate"]}X_{i2} + \Sexpr{intfit_sum$coefficients["Entrance.Test:Major.Indicated","Estimate"]}X_{i1}X_{i2} $$
+
 \item{} Test whether the interaction term is beneficial to the model:
 
 
@@ -388,6 +475,7 @@ Refer to Market share data set in Appendix C.3. Company executives want to be ab
 
 \begin{enumerate}[a)]
 \item{} First, let's read in the data and recode the year variable into an indicator with a base of the year 2000:
+
 <<readdata>>=
 MarketShare <- read.table('MarketShare.txt',stringsAsFactors=F)
 names(MarketShare) <- c("id","Market.Share","Merchandise.Price","Nielson.Rating","Wholesale.Price.Discount","Package.Promotion","Month","Year")
@@ -395,6 +483,7 @@ MarketShare$i1999 <- 1*(MarketShare$Year == 1999)
 MarketShare$i2001 <- 1*(MarketShare$Year == 2001) 
 MarketShare$i2002 <- 1*(MarketShare$Year == 2002)
 @
+
 \end{enumerate}
 
 
