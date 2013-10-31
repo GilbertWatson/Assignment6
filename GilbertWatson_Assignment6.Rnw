@@ -671,17 +671,26 @@ $$ F^* > F(0.95,1,\Sexpr{length(MarketShare$id) - msfit_sum$df[1]}) $$
 Let's compute the test statistic and critical value. We must also fit a reduced model:
 
 <<testfstaragain2>>=
+# reduced model:
+msfitrd <- lm(Market.Share~Merchandise.Price+Wholesale.Price.Discount+Package.Promotion,
+            data = MarketShare)
+msfitrd_sum <- summary(msfitrd)
+
 # test statistic
-F_star <- ((deviance(msfit) - deviance(msfitint)) /
-  ((length(MarketShare$id) - msfit_sum$df[1]) - 
-     (length(MarketShare$id) - msfitint_sum$df[1]))) /
-  (deviance(msfitint)/(length(MarketShare$id) - msfitint_sum$df[1]))
+F_star <- ((deviance(msfitrd) - deviance(msfit)) /
+  ((length(MarketShare$id) - msfitrd_sum$df[1]) - 
+     (length(MarketShare$id) - msfit_sum$df[1]))) /
+  (deviance(msfit)/(length(MarketShare$id) - msfit_sum$df[1]))
 # critical value
-cv <- qf(0.95,1,length(MarketShare$id)-msfitint_sum$df[1])
+cv <- qf(0.95,1,length(MarketShare$id)-msfit_sum$df[1])
 print(paste0("F^star is ",F_star," and the critical value is ",cv,"."))
 @
 
-Clearly, we fail to reject $H_0$ and conclude that we should drop quadratic and interaction terms from the model.
+Clearly, we fail to reject $H_0$ and conclude that we should drop year indicators and the Nielson rating. This model estimation follows:
+
+<<finalmodel>>=
+msfitrd_sum
+@
 
 \end{enumerate}
 
