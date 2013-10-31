@@ -194,7 +194,8 @@ Let's compute the test statistic and critical value:
 <<testfstar>>=
 # test statistic
 F_star <- ((deviance(fo) - deviance(fit)) /
-  ((length(BrandPreference$Brand.Liking) - fosum$df[1]) - (length(BrandPreference$Brand.Liking) - fitsum$df[1]))) /
+  ((length(BrandPreference$Brand.Liking) - fosum$df[1]) - 
+     (length(BrandPreference$Brand.Liking) - fitsum$df[1]))) /
   (deviance(fit)/(length(BrandPreference$Brand.Liking) - fitsum$df[1]))
 # critical value
 cv <- qf(0.99,1,length(BrandPreference$Brand.Liking)-fitsum$df[1])
@@ -217,6 +218,50 @@ print(paste0("The p-value for F^star is: ",pval))
 Refer to Brand Preference Problem 6.5: Calculate $R_{Y1}^2$, $R_{Y2}^2$, $R_{|2}^2$, $R_{Y1|2}^2$, $R_{Y2|1}^2$, and $R^2$. Explain what each coefficient measures and interpret your results.
 
 \subsection{Answer:}
+
+\begin{enumerate}[a)]
+
+\item{} $R_{Y1}^2$:
+
+<<y1>>=
+anovafit <- anova(fit)
+r2_y1 <- anovafit["Moisture.Content","Sum Sq"]/sum(anovafit$`Sum Sq`)
+r2_y1
+@
+
+\item{} $R_{Y2}^2$:
+
+<<y2>>=
+r2_y2 <- anovafit["Sweetness","Sum Sq"]/sum(anovafit$`Sum Sq`)
+r2_y2
+@
+
+\item{} $R_{|2}^2$:
+
+\item{} $R_{Y1|2}^2$:
+
+<<y12>>=
+fo2 <- lm(Brand.Liking~Sweetness,data=BrandPreference)
+fosum2 <- summary(fo2)
+r2_y12 <- (deviance(fo2) - deviance(fit))/deviance(fo2)
+r2_y12
+@
+
+\item{} $R_{Y2|1}^2$:
+
+<<y21>>=
+r2_y21 <- (deviance(fo) - deviance(fit))/deviance(fo)
+r2_y21
+@
+
+\item{} $R^2$:
+
+<<r2>>=
+r2 <- fitsum$r.squared
+r2
+@
+
+\end{enumerate}
 
 %-------------------------------------------
 \section{7.24}
@@ -256,7 +301,17 @@ fosum
 
 We find that the coefficients are the same in both models for Sweetness.
 
-\item{} Let's find $SSR(X_1|X_2)$:
+\item{} Let's find $SSR(X_1|X_2)$ and $SSR(X_1)$:
+
+<<ssrssssssss>>=
+SSR_x1x2 <- deviance(fo2) - deviance(fit)
+SSR_x1 <- sum(anova(fo)$`Sum Sq`) - deviance(fo)
+print(paste0("SSR(X1|X2) is ",SSR_x1x2," and SSR(X1) is ",SSR_x1))
+@
+
+Clearly $SSR(X_1|X_2)$ and $SSR(X_1)$ are both the same.
+
+\item{} As suggested by the correlation matrix, Moisture Content and Sweetness are uncorrelated, so we would expect the estimated coefficients from part (b) to be the same for both models. We would also expect the $SSR(X_1|X_2)$ to be the same as $SSR(X_1)$ since $X_1$ and $X_2$ are unrelated. The presence or absence of $X_2$ provides no information about $X_1$. The converse is also true.
 
 \end{enumerate}
 
@@ -314,7 +369,7 @@ as required.
 Refer to Brand Preference Problem 6.5:
 
 \begin{enumerate}[a)]
-\item{} Regress $Y$ on $X_1$ using simple linear regression model (2.1) and obtain the residuals.
+\item{} Regress $Y$ on $X_2$ using simple linear regression model (2.1) and obtain the residuals.
 \item{} Regress $X_1$ on $X_2$ using simple linear regression model (2.1) and obtain the residuals.
 \item{} Calculate the coefficient of simple correlation between the two sets of residuals and show that it equals $R_{Y1|2}$.
 \end{enumerate}
@@ -325,8 +380,8 @@ Refer to Brand Preference Problem 6.5:
 \item{} We have already previously estimated this model, so we can obtain the residuals:
 
 <<morebrands>>=
-res_fo <- residuals(fo)
-print(res_fo)
+res_fo2 <- residuals(fo2)
+print(res_fo2)
 @
 
 \item{} Now let's regress $X_1$ on $X_2$ and obtain the residuals:
@@ -340,14 +395,17 @@ print(res_xonx)
 \item{} The simple correlation coefficient between the residuals for the two models is:
 
 <<corresids>>=
-cor(x=res_fo,y=res_xonx)
+cor(x=res_fo2,y=res_xonx)
 @
 
-Now let's show that is is roughly equal to $R_{Y1|2}$:
+Now let's show that is is roughly equal to $r_{Y1|2}$:
 
 <<roughlyequal>>=
-
+r_y12 <- sqrt((deviance(fo2) - deviance(fit))/deviance(fo2))
+r_y12
 @
+
+Which is clearly the same as the coefficient of simple correlation between the two sets of residuals.
 
 \end{enumerate}
 
@@ -374,10 +432,34 @@ wint_sum <- summary(wint)
 wint_sum
 @
 
-\item{} Now let's test and see if the interaction term can be removed from the model:
+\item{} Now let's test and see if the interaction term can be removed from the model. The alternatives are as follows:
 
+$$ H_0: \beta{}_4 = 0 $$
+$$ H_a: \beta{}_4 \neq{} 0 $$
 
+The decision rule is reject $H_0$ if:
 
+$$ F^* > F(0.95,1,\Sexpr{length(BrandPreference$Brand.Liking) - wint_sum$df[1]}) $$
+
+Let's compute the test statistic and critical value:
+
+<<testfstaragain>>=
+# test statistic
+F_star <- ((deviance(fit) - deviance(wint)) /
+  ((length(BrandPreference$Brand.Liking) - fitsum$df[1]) - 
+     (length(BrandPreference$Brand.Liking) - wint_sum$df[1]))) /
+  (deviance(wint)/(length(BrandPreference$Brand.Liking) - wint_sum$df[1]))
+# critical value
+cv <- qf(0.95,1,length(BrandPreference$Brand.Liking)-wint_sum$df[1])
+print(paste0("F^star is ",F_star," and the critical value is ",cv,"."))
+@
+
+Clearly we fail to reject $H_0$ and conclude that $X_1X_2$ should not remain in the model. Let's compute the p-value of the test statistic:
+
+<<getpagain>>=
+pval <- 1 - pf(F_star,1,length(BrandPreference$Brand.Liking)-wint_sum$df[1])
+print(paste0("The p-value for F^star is: ",pval))
+@
 
 \end{enumerate}
 
@@ -410,20 +492,45 @@ gpafit_sum
 
 The estimated model is:
 $$ Y_i = \Sexpr{gpafit_sum$coefficients["(Intercept)","Estimate"]} + \Sexpr{gpafit_sum$coefficients["Entrance.Test","Estimate"]}X_{i1} + \Sexpr{gpafit_sum$coefficients["Entrance.Test","Estimate"]}X_{i2} $$
-\item{} Construct a test:
 
+\item{} Now let's test and see if $X_2$ can be removed from the model. The alternatives are as follows:
 
+$$ H_0: \beta{}_3 = 0 $$
+$$ H_a: \beta{}_3 \neq{} 0 $$
+
+The decision rule is reject $H_0$ if:
+
+$$ F^* > F(0.99,1,\Sexpr{length(GPA$GPA) - gpafit_sum$df[1]}) $$
+
+Let's compute the test statistic and critical value:
+
+<<testfstaragain2>>=
+# test statistic
+gpafo <- lm(GPA~Entrance.Test,data=GPA)
+gpafo_sum <- summary(gpafo)
+F_star <- ((deviance(gpafo) - deviance(gpafit)) /
+  ((length(GPA$GPA) - gpafo_sum$df[1]) - 
+     (length(GPA$GPA) - gpafit_sum$df[1]))) /
+  (deviance(gpafit)/(length(GPA$GPA) - gpafit_sum$df[1]))
+# critical value
+cv <- qf(0.99,1,length(GPA$GPA)-gpafit_sum$df[1])
+print(paste0("F^star is ",F_star," and the critical value is ",cv,"."))
+@
+
+Clearly we fail to reject $H_0$ and conclude that $X_2$ should not remain in the model.
 
 \item{} Let's plot the residuals vs the variable $X_1X_2$:
 
 <<moreresplots, fig=TRUE>>=
 qplot(x=residuals(gpafit),
-      y=Entrance.Test*Major.Indicated,data=GPA,
+      y=Entrance.Test*Major.Indicated,
+      data=GPA,
       xlab="Residuals",
       ylab="Entrance Test Score times Indicator Variable for Major Declaration")
 @
 
 There appears to be a positive relationship between the residuals and $X_1X_2$ when $X_2 = 0$. It may be beneficial to include the term.
+
 \end{enumerate}
 
 %-------------------------------------------
@@ -452,10 +559,29 @@ intfit_sum
 The estimated model is:
 $$ Y_i = \Sexpr{intfit_sum$coefficients["(Intercept)","Estimate"]} + \Sexpr{intfit_sum$coefficients["Entrance.Test","Estimate"]}X_{i1} + \Sexpr{intfit_sum$coefficients["Major.Indicated","Estimate"]}X_{i2} + \Sexpr{intfit_sum$coefficients["Entrance.Test:Major.Indicated","Estimate"]}X_{i1}X_{i2} $$
 
-\item{} Test whether the interaction term is beneficial to the model:
+\item{} Let's test whether the interaction term is beneficial to the model. The alternatives are as follows:
 
+$$ H_0: \beta{}_4 = 0 $$
+$$ H_a: \beta{}_4 \neq{} 0 $$
 
+The decision rule is reject $H_0$ if:
 
+$$ F^* > F(0.95,1,\Sexpr{length(GPA$GPA) - gpafit_sum$df[1]}) $$
+
+Let's compute the test statistic and critical value:
+
+<<testfstaragain2>>=
+# test statistic
+F_star <- ((deviance(gpafit) - deviance(intfit)) /
+  ((length(GPA$GPA) - gpafit_sum$df[1]) - 
+     (length(GPA$GPA) - intfit_sum$df[1]))) /
+  (deviance(intfit)/(length(GPA$GPA) - intfit_sum$df[1]))
+# critical value
+cv <- qf(0.95,1,length(GPA$GPA)-intfit_sum$df[1])
+print(paste0("F^star is ",F_star," and the critical value is ",cv,"."))
+@
+
+Clearly we reject $H_0$ and conclude that $X_1X_2$ should remain in the model. The nature of the interaction effect is that if an incoming student declared a major at time of admittance, then the marginal effect of a one point increase in entrance test score on first year GPA is $\Sexpr{intfit_sum$coefficients["Entrance.Test:Major.Indicated","Estimate"]}$ higher than the baseline marginal effect when a student doesn't initially indicate a major.
 
 \end{enumerate}
 

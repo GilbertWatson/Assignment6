@@ -4,20 +4,20 @@
 \contentsline {subsection}{\numberline {2.1}Answer:}{10}{subsection.2.1}
 \contentsline {section}{\numberline {3}7.12}{11}{section.3}
 \contentsline {subsection}{\numberline {3.1}Answer:}{11}{subsection.3.1}
-\contentsline {section}{\numberline {4}7.24}{11}{section.4}
-\contentsline {subsection}{\numberline {4.1}Answer:}{11}{subsection.4.1}
-\contentsline {section}{\numberline {5}7.28}{13}{section.5}
-\contentsline {subsection}{\numberline {5.1}Answer:}{13}{subsection.5.1}
-\contentsline {section}{\numberline {6}7.29}{13}{section.6}
-\contentsline {subsection}{\numberline {6.1}Answer:}{14}{subsection.6.1}
-\contentsline {section}{\numberline {7}7.30}{14}{section.7}
-\contentsline {subsection}{\numberline {7.1}Answer:}{14}{subsection.7.1}
-\contentsline {section}{\numberline {8}8.11}{15}{section.8}
-\contentsline {subsection}{\numberline {8.1}Answer:}{15}{subsection.8.1}
-\contentsline {section}{\numberline {9}8.16}{15}{section.9}
-\contentsline {subsection}{\numberline {9.1}Answer:}{16}{subsection.9.1}
-\contentsline {section}{\numberline {10}8.20}{17}{section.10}
-\contentsline {subsection}{\numberline {10.1}Answer:}{17}{subsection.10.1}
-\contentsline {section}{\numberline {11}8.42}{18}{section.11}
-\contentsline {subsection}{\numberline {11.1}Answer:}{18}{subsection.11.1}
-\contentsline {section}{\numberline {12}System Information}{19}{section.12}
+\contentsline {section}{\numberline {4}7.24}{12}{section.4}
+\contentsline {subsection}{\numberline {4.1}Answer:}{12}{subsection.4.1}
+\contentsline {section}{\numberline {5}7.28}{14}{section.5}
+\contentsline {subsection}{\numberline {5.1}Answer:}{14}{subsection.5.1}
+\contentsline {section}{\numberline {6}7.29}{14}{section.6}
+\contentsline {subsection}{\numberline {6.1}Answer:}{15}{subsection.6.1}
+\contentsline {section}{\numberline {7}7.30}{15}{section.7}
+\contentsline {subsection}{\numberline {7.1}Answer:}{15}{subsection.7.1}
+\contentsline {section}{\numberline {8}8.11}{16}{section.8}
+\contentsline {subsection}{\numberline {8.1}Answer:}{16}{subsection.8.1}
+\contentsline {section}{\numberline {9}8.16}{17}{section.9}
+\contentsline {subsection}{\numberline {9.1}Answer:}{17}{subsection.9.1}
+\contentsline {section}{\numberline {10}8.20}{19}{section.10}
+\contentsline {subsection}{\numberline {10.1}Answer:}{20}{subsection.10.1}
+\contentsline {section}{\numberline {11}8.42}{20}{section.11}
+\contentsline {subsection}{\numberline {11.1}Answer:}{21}{subsection.11.1}
+\contentsline {section}{\numberline {12}System Information}{21}{section.12}

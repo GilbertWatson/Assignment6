@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2013.9.10)  31 OCT 2013 11:58
+This is pdfTeX, Version 3.1415926-1.40.10 (TeX Live 2009/Debian) (format=pdflatex 2013.9.10)  31 OCT 2013 14:13
 entering extended mode
  %&-line parsing enabled.
 **GilbertWatson_Assignment6.tex
@@ -460,6 +460,21 @@ Overfull \vbox (21.68121pt too high) has occurred while \output is active []
 
 
 [10]
+LaTeX Font Info:    Try loading font information for TS1+aett on input line 327
+.
+ (/usr/share/R/share/texmf/tex/latex/ts1aett.fd
+File: ts1aett.fd 
+)
+LaTeX Font Info:    Try loading font information for TS1+cmtt on input line 327
+.
+
+(/usr/share/texmf-texlive/tex/latex/base/ts1cmtt.fd
+File: ts1cmtt.fd 1999/05/25 v2.5h Standard LaTeX font definitions
+)
+LaTeX Font Info:    Font shape `TS1/aett/m/sl' in size <10> not available
+(Font)              Font shape `TS1/cmtt/m/sl' tried instead on input line 327.
+
+
 Overfull \vbox (21.68121pt too high) has occurred while \output is active []
 
 
@@ -480,24 +495,6 @@ Overfull \vbox (21.68121pt too high) has occurred while \output is active []
 
 
 [15]
-LaTeX Font Info:    Try loading font information for TS1+aett on input line 612
-.
- (/usr/share/R/share/texmf/tex/latex/ts1aett.fd
-File: ts1aett.fd 
-)
-LaTeX Font Info:    Try loading font information for TS1+cmtt on input line 612
-.
-
-(/usr/share/texmf-texlive/tex/latex/base/ts1cmtt.fd
-File: ts1cmtt.fd 1999/05/25 v2.5h Standard LaTeX font definitions
-)
-LaTeX Font Info:    Font shape `TS1/aett/m/sl' in size <10> not available
-(Font)              Font shape `TS1/cmtt/m/sl' tried instead on input line 612.
-
-
-<Fig-moreresplots.pdf, id=281, 433.62pt x 433.62pt>
-File: Fig-moreresplots.pdf Graphic file (type pdf)
- <use Fig-moreresplots.pdf>
 Overfull \vbox (21.68121pt too high) has occurred while \output is active []
 
 
@@ -505,8 +502,19 @@ Overfull \vbox (21.68121pt too high) has occurred while \output is active []
 Overfull \vbox (21.68121pt too high) has occurred while \output is active []
 
 
-[17 <./Fig-moreresplots.pdf>]
-Overfull \hbox (20.67586pt too wide) detected at line 709
+[17]
+Overfull \vbox (21.68121pt too high) has occurred while \output is active []
+
+
+[18] <Fig-moreresplots.pdf, id=306, 433.62pt x 433.62pt>
+File: Fig-moreresplots.pdf Graphic file (type pdf)
+
+<use Fig-moreresplots.pdf>
+Overfull \vbox (21.68121pt too high) has occurred while \output is active []
+
+
+[19 <./Fig-moreresplots.pdf>]
+Overfull \hbox (20.67586pt too wide) detected at line 863
 \OML/cmm/m/it/10 Y[] \OT1/cmr/m/n/10 = 3\OML/cmm/m/it/10 :\OT1/cmr/m/n/10 22631
 84991274 + \OMS/cmsy/m/n/10 ^^@\OT1/cmr/m/n/10 0\OML/cmm/m/it/10 :\OT1/cmr/m/n/
 10 00275741710296684\OML/cmm/m/it/10 X[] \OT1/cmr/m/n/10 + \OMS/cmsy/m/n/10 ^^@
@@ -519,16 +527,16 @@ L/cmm/m/it/10 X[]X[]
 Overfull \vbox (21.68121pt too high) has occurred while \output is active []
 
 
-[18]
+[20]
 Overfull \vbox (21.68121pt too high) has occurred while \output is active []
 
 
-[19] (./GilbertWatson_Assignment6.aux) ) 
+[21] (./GilbertWatson_Assignment6.aux) ) 
 Here is how much of TeX's memory you used:
- 6090 strings out of 495061
- 86584 string characters out of 1182621
- 153852 words of memory out of 3000000
- 9022 multiletter control sequences out of 15000+50000
+ 6100 strings out of 495061
+ 86664 string characters out of 1182621
+ 154852 words of memory out of 3000000
+ 9023 multiletter control sequences out of 15000+50000
  28145 words of font info for 66 fonts, out of 3000000 for 9000
  28 hyphenation exceptions out of 8191
  38i,6n,36p,634b,557s stack positions out of 5000i,500n,10000p,200000b,50000s
@@ -544,9 +552,9 @@ nts/cm/cmr7.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmsltt
 10.pfb></usr/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmsy10.pfb></us
 r/share/texmf-texlive/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/share/texm
 f-texlive/fonts/type1/public/amsfonts/cm/cmtt10.pfb>
-Output written on GilbertWatson_Assignment6.pdf (19 pages, 263180 bytes).
+Output written on GilbertWatson_Assignment6.pdf (21 pages, 270711 bytes).
 PDF statistics:
- 384 PDF objects out of 1000 (max. 8388607)
- 102 named destinations out of 1000 (max. 500000)
+ 403 PDF objects out of 1000 (max. 8388607)
+ 111 named destinations out of 1000 (max. 500000)
  229 words of extra memory for PDF output out of 10000 (max. 10000000)
 
